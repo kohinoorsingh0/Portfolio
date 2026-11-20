@@ -28,7 +28,7 @@ export default function Hero() {
         aria-hidden="true"
       />
       <div
-        className="absolute -bottom-10 left-[25%] w-72 h-72 rounded-full bg-[#FFD7BE]/45 dark:bg-coral/10 blur-3xl pointer-events-none"
+        className="absolute bottom-10 sm:bottom-16 left-[34%] w-64 h-64 rounded-full bg-[#FFD7BE]/45 dark:bg-coral/10 blur-3xl pointer-events-none"
         aria-hidden="true"
       />
 

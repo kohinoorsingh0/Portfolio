@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function ShortVersion() {
   return (
-    <section className="relative overflow-hidden bg-cream dark:bg-navy py-16 sm:py-24 lg:py-32 transition-colors duration-300 border-t border-black/5 dark:border-white/5">
+    <section className="relative overflow-hidden bg-cream dark:bg-navy py-16 sm:py-24 lg:py-32 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[100px_1.25fr_0.85fr] items-start gap-8 lg:gap-12">
           {/* Column 1: Vertical Side Label (Desktop) / Pill on Mobile */}
