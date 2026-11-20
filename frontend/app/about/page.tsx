@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Approach from "@/components/about/Approach";
+import SkillsSection from "@/components/home/SkillsSection";
 
 export const metadata: Metadata = {
   title: "About — Kohinoor Singh",
@@ -32,6 +33,9 @@ export default function AboutPage() {
 
       {/* Section 01: My Approach */}
       <Approach />
+
+      {/* Skills Section */}
+      <SkillsSection />
     </>
   );
 }
