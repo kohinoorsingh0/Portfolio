@@ -2,22 +2,30 @@ import Link from "next/link";
 
 export default function CtaBanner() {
   return (
-    <section className="w-full px-4 sm:px-6 py-16 md:py-24">
-      <div className="max-w-4xl mx-auto rounded-3xl bg-cream-card dark:bg-navy/80 border border-black/10 dark:border-white/10 p-8 sm:p-12 md:p-16 text-center shadow-sm">
-        <span className="mono-label text-xs sm:text-sm font-bold text-royal dark:text-lime tracking-wider block mb-3">
+    <section className="w-full bg-[#FF5C38] py-20 sm:py-24 md:py-32 text-center relative overflow-hidden transition-none border-0 m-0">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center">
+        {/* Eyebrow: small mono, uppercase in ink #111111 */}
+        <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.16em] text-[#111111] mb-4 sm:mb-6 block select-none">
           HAVE A PROJECT OR AN OPEN ROLE?
         </span>
-        <h2 className="headline text-3xl sm:text-4xl md:text-5xl font-black text-ink dark:text-cream tracking-tight max-w-2xl mx-auto mb-8">
-          Let&apos;s build something remarkable.
+
+        {/* Headline: huge bold tight — line 1 in ink #111111, line 2 in white #FFFFFF */}
+        <h2 className="text-[38px] sm:text-[56px] md:text-[68px] lg:text-[78px] font-black tracking-[-0.045em] leading-[0.98] text-[#111111] mb-8 sm:mb-10 max-w-4xl mx-auto">
+          Let&apos;s build something
+          <br />
+          <span className="text-white">remarkable.</span>
         </h2>
-        <div className="flex justify-center">
-          <Link
-            href="/contact"
-            className="inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-coral hover:bg-coral-hover active:scale-95 transition-all duration-150 rounded-full shadow-md hover:shadow-lg cursor-pointer focus-visible:outline-2 focus-visible:outline-royal"
-          >
-            Start a conversation →
-          </Link>
-        </div>
+
+        {/* Button: dark navy/black in light mode, crisp white pill in dark mode (matching Figma) */}
+        <Link
+          href="/contact"
+          className="inline-flex items-center justify-center gap-2.5 px-8 sm:px-9 py-4 sm:py-4.5 rounded-full bg-[#111111] text-white dark:bg-[#FAF8F4] dark:text-[#111111] font-bold text-sm sm:text-base hover:bg-black/90 dark:hover:bg-white hover:scale-[1.02] active:scale-[0.99] transition-all duration-200 shadow-lg cursor-pointer"
+        >
+          <span>Start a conversation</span>
+          <span className="text-base sm:text-lg" aria-hidden="true">
+            →
+          </span>
+        </Link>
       </div>
     </section>
   );
