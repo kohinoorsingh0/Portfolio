@@ -118,7 +118,7 @@ export default function FeaturedWork() {
                   <div className="h-2 w-3/4 bg-[#14121F]/20 rounded-sm" />
                   <div className="mt-auto p-2 bg-[#E3DDFF] rounded-lg border border-[#14121F]/20">
                     <p className="font-mono text-[9px] font-bold text-[#14121F]">
-                      SLA: 98.4%
+                      SLA Tracking
                     </p>
                   </div>
                 </div>
