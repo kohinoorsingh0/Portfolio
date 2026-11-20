@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Approach from "@/components/about/Approach";
-import SkillsSection from "@/components/home/SkillsSection";
+import Capabilities from "@/components/about/Capabilities";
+import WhatIDo from "@/components/about/WhatIDo";
+import ResumeCard from "@/components/about/ResumeCard";
 
 export const metadata: Metadata = {
   title: "About — Kohinoor Singh",
@@ -31,11 +33,17 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Section 01: My Approach */}
+      {/* Section 01: My Approach & Verified FixFlow Stats */}
       <Approach />
 
-      {/* Skills Section */}
-      <SkillsSection />
+      {/* Section 02: Capabilities */}
+      <Capabilities />
+
+      {/* Section 03: What I Do */}
+      <WhatIDo />
+
+      {/* Section 04: The One-Pager Resume */}
+      <ResumeCard />
     </>
   );
 }
