@@ -1,13 +1,12 @@
-import express, { Request, Response } from "express";
+import app from "./app";
+import { validateEnv } from "./config/env";
 
-const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(express.json());
-
-app.get("/health", (_req: Request, res: Response) => {
-  res.status(200).send("OK");
-});
+// Validate environment variables on startup
+if (process.env.SKIP_ENV_VALIDATION !== "true") {
+  validateEnv();
+}
 
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
