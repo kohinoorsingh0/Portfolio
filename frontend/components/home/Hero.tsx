@@ -127,7 +127,7 @@ export default function Hero() {
           {/* Right Column: Arched Photo & Floating Stickers */}
           <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[440px] mx-auto mt-6 lg:mt-0">
             {/* Arched Photo Frame with Watercolor Portrait */}
-            <div className="relative w-full aspect-[4/5] max-h-[420px] sm:max-h-none sm:h-[540px] bg-white rounded-t-[180px] sm:rounded-t-[220px] rounded-b-[28px] sm:rounded-b-[32px] overflow-hidden shadow-[16px_16px_0_#E9E5FF] dark:shadow-[16px_16px_0_#182046] rotate-[1.5deg] hover:rotate-0 transition-transform duration-500 border border-[#DDD6FE] dark:border-white/10 group">
+            <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[540px] bg-white rounded-t-[180px] sm:rounded-t-[220px] rounded-b-[28px] sm:rounded-b-[32px] overflow-hidden shadow-[16px_16px_0_#E9E5FF] dark:shadow-[16px_16px_0_#182046] rotate-[1.5deg] hover:rotate-0 transition-transform duration-500 border border-[#DDD6FE] dark:border-white/10 group">
               <Image
                 src="/images/kohinoor-watercolor.jpg"
                 alt="Kohinoor Singh"
