@@ -72,3 +72,19 @@ export const publicGetRateLimiter = rateLimit({
     });
   },
 });
+
+// 4. Admin APIs limiter: 120 requests / 15 min per IP
+export const adminRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (_req: Request, res: Response, _next: NextFunction, options) => {
+    const retryAfter = Math.ceil(options.windowMs / 1000);
+    res.setHeader("Retry-After", retryAfter.toString());
+    res.status(429).json({
+      error: "Too many admin requests. Please wait and try again later.",
+      retryAfter,
+    });
+  },
+});
