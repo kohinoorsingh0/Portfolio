@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import helmet from "helmet";
 import cors from "cors";
 import publicRoutes from "./routes/public";
+import contactRoutes from "./routes/contact";
 
 const app = express();
 
@@ -19,6 +20,9 @@ app.use(express.json());
 
 // Public read APIs
 app.use("/api", publicRoutes);
+
+// Contact & Resume APIs
+app.use("/api", contactRoutes);
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
