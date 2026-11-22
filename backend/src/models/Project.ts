@@ -19,6 +19,7 @@ export const projectZodSchema = z.object({
   liveUrl: z.string().optional().nullable(),
   featured: z.boolean().default(false),
   order: z.number().int().default(0),
+  visible: z.boolean().default(true),
   caseStudy: caseStudyZodSchema.default({
     overview: "",
     challenge: "",
@@ -65,6 +66,7 @@ const projectSchema = new Schema<IProjectDocument>(
     liveUrl: { type: String, default: null, trim: true },
     featured: { type: Boolean, default: false },
     order: { type: Number, default: 0 },
+    visible: { type: Boolean, default: true },
     caseStudy: { type: caseStudySchema, default: () => ({}) },
     resultText: { type: String, default: null, trim: true },
   },

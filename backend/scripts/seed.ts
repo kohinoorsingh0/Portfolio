@@ -54,6 +54,7 @@ const PROJECTS_DATA = [
     liveUrl: null,
     featured: true,
     order: 1,
+    visible: true,
     caseStudy: {
       overview:
         "FixFlow was created to eliminate lost paper complaints, chaotic messaging groups, and unaccountable campus maintenance requests by providing a transparent digital grievance workflow.",
@@ -78,6 +79,7 @@ const PROJECTS_DATA = [
     liveUrl: null,
     featured: false,
     order: 2,
+    visible: true,
     caseStudy: {
       overview:
         "Kohinoor Tunes is a community-first audio application focused on speed, zero ad interruptions, and intuitive playlist management.",

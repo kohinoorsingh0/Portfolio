@@ -126,6 +126,7 @@ export const projectValidationSchema = z.object({
     .nullable(),
   featured: z.boolean().default(false),
   order: z.number().int().default(0),
+  visible: z.boolean().default(true),
   caseStudy: caseStudyValidationSchema.default({
     overview: "",
     challenge: "",
