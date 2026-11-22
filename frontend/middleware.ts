@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(_request: NextRequest) {
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Protect /admin routes (except /admin/login) by checking PRESENCE of admin_token cookie
+  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+    const hasAdminToken = request.cookies.has("admin_token");
+    if (!hasAdminToken) {
+      const loginUrl = new URL("/admin/login", request.url);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
   const response = NextResponse.next();
 
   response.headers.set("X-Content-Type-Options", "nosniff");
