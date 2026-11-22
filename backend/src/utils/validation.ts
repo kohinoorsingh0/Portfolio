@@ -16,6 +16,28 @@ export const sanitizedString = (maxLength: number = 500) =>
     .transform((val) => stripHtml(val));
 
 /**
+ * Accepts valid HTTP/HTTPS URLs, root-relative file paths (/images/...), or empty string
+ */
+export const urlOrPath = (errorMsg: string = "Invalid URL or path") =>
+  z
+    .string()
+    .trim()
+    .refine(
+      (val) => {
+        if (!val || val === "") return true;
+        if (val.startsWith("/")) return true;
+        try {
+          const parsed = new URL(val);
+          return parsed.protocol === "http:" || parsed.protocol === "https:";
+        } catch {
+          return false;
+        }
+      },
+      { message: errorMsg }
+    )
+    .default("");
+
+/**
  * 1. Admin Login Schema
  */
 export const loginSchema = z.object({
@@ -104,12 +126,7 @@ export const projectValidationSchema = z.object({
   ),
   longDescription: sanitizedString(5000).default(""),
   stack: z.array(sanitizedString(50)).default([]),
-  imageUrl: z
-    .string()
-    .trim()
-    .url("Invalid image URL")
-    .or(z.literal(""))
-    .default(""),
+  imageUrl: urlOrPath("Invalid image URL"),
   githubUrl: z
     .string()
     .trim()
@@ -195,18 +212,8 @@ export const siteSettingsValidationSchema = z.object({
     .default(""),
   heroTitle: sanitizedString(300).default(""),
   heroHighlightWord: sanitizedString(100).default(""),
-  profilePhotoUrl: z
-    .string()
-    .trim()
-    .url("Invalid profile photo URL")
-    .or(z.literal(""))
-    .default(""),
-  resumeUrl: z
-    .string()
-    .trim()
-    .url("Invalid resume URL")
-    .or(z.literal(""))
-    .default(""),
+  profilePhotoUrl: urlOrPath("Invalid profile photo URL"),
+  resumeUrl: urlOrPath("Invalid resume URL"),
 });
 
 export type SiteSettingsInput = z.infer<typeof siteSettingsValidationSchema>;

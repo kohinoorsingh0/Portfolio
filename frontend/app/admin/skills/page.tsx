@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, FormEvent } from "react";
 import AdminShell from "@/components/admin/AdminShell";
+import { triggerRevalidation } from "@/lib/api";
 
 export type SkillCategory =
   | "Frontend"
@@ -198,6 +199,7 @@ export default function AdminSkillsPage() {
         );
         setError("Failed to update visibility toggle.");
       } else {
+        triggerRevalidation();
         setSuccess(`"${skill.name}" is now ${updatedVisible ? "visible" : "hidden"}.`);
         setTimeout(() => setSuccess(null), 3000);
       }
@@ -259,6 +261,7 @@ export default function AdminSkillsPage() {
           setSkills((prev) => [...prev, data.skill]);
           setSuccess(`Skill "${trimmedName}" created successfully.`);
         }
+        triggerRevalidation();
         setIsModalOpen(false);
         setEditingSkill(null);
         setTimeout(() => setSuccess(null), 3500);
@@ -297,6 +300,7 @@ export default function AdminSkillsPage() {
       const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.ok) {
+        triggerRevalidation();
         setSkills((prev) => prev.filter((s) => s._id !== deletingSkill._id));
         setSuccess(`Skill "${deletingSkill.name}" was permanently deleted.`);
         setDeletingSkill(null);
@@ -644,14 +648,14 @@ export default function AdminSkillsPage() {
                   <button
                     type="button"
                     onClick={() => handleOpenEdit(skill)}
-                    className="flex-1 py-2 rounded-xl text-xs font-semibold text-center text-royal dark:text-[#7888FF] bg-royal/5 dark:bg-royal/15"
+                    className="flex-1 min-h-[44px] flex items-center justify-center py-2 rounded-xl text-xs font-semibold text-center text-royal dark:text-[#7888FF] bg-royal/5 dark:bg-royal/15 cursor-pointer"
                   >
                     Edit
                   </button>
                   <button
                     type="button"
                     onClick={() => setDeletingSkill(skill)}
-                    className="flex-1 py-2 rounded-xl text-xs font-semibold text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30"
+                    className="flex-1 min-h-[44px] flex items-center justify-center py-2 rounded-xl text-xs font-semibold text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 cursor-pointer"
                   >
                     Delete
                   </button>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
 import AdminShell from "@/components/admin/AdminShell";
+import { triggerRevalidation } from "@/lib/api";
 
 interface SiteSettingsForm {
   name: string;
@@ -18,6 +19,7 @@ interface SiteSettingsForm {
   heroTitle: string;
   heroHighlightWord: string;
   profilePhotoUrl: string;
+  resumeUrl: string;
 }
 
 const INITIAL_FORM: SiteSettingsForm = {
@@ -35,12 +37,14 @@ const INITIAL_FORM: SiteSettingsForm = {
   heroTitle: "",
   heroHighlightWord: "",
   profilePhotoUrl: "",
+  resumeUrl: "",
 };
 
 export default function AdminSettingsPage() {
   const [formData, setFormData] = useState<SiteSettingsForm>(INITIAL_FORM);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -79,6 +83,7 @@ export default function AdminSettingsPage() {
               heroTitle: data.heroTitle || "",
               heroHighlightWord: data.heroHighlightWord || "",
               profilePhotoUrl: data.profilePhotoUrl || "",
+              resumeUrl: data.resumeUrl || "",
             });
           }
         }
@@ -148,6 +153,7 @@ export default function AdminSettingsPage() {
         heroTitle: formData.heroTitle.trim(),
         heroHighlightWord: formData.heroHighlightWord.trim(),
         profilePhotoUrl: formData.profilePhotoUrl.trim(),
+        resumeUrl: formData.resumeUrl.trim(),
       };
 
       const res = await fetch(`${apiUrl.replace(/\/$/, "")}/admin/settings`, {
@@ -168,6 +174,7 @@ export default function AdminSettingsPage() {
 
       if (res.ok && data.ok) {
         setSuccess("Site settings updated successfully! Changes are live in database.");
+        triggerRevalidation();
         if (data.settings) {
           setFormData((prev) => ({
             ...prev,
@@ -181,6 +188,72 @@ export default function AdminSettingsPage() {
       setError("Network error updating site settings.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleResumeFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      setError("Please select a valid PDF file for resume upload.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Resume file size exceeds the 5MB limit.");
+      return;
+    }
+
+    setUploadingResume(true);
+    setError(null);
+
+    try {
+      const uploadBody = new FormData();
+      uploadBody.append("file", file);
+
+      const uploadRes = await fetch(`${apiUrl.replace(/\/$/, "")}/admin/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: uploadBody,
+      });
+
+      if (uploadRes.status === 401) {
+        window.location.href = "/admin/login";
+        return;
+      }
+
+      const uploadData = await uploadRes.json().catch(() => ({}));
+
+      if (uploadRes.ok && uploadData.ok && uploadData.url) {
+        const newResumeUrl = uploadData.url;
+        setFormData((prev) => ({ ...prev, resumeUrl: newResumeUrl }));
+
+        // Automatically persist updated resumeUrl to site settings in database
+        const updateRes = await fetch(`${apiUrl.replace(/\/$/, "")}/admin/settings`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            ...formData,
+            resumeUrl: newResumeUrl,
+          }),
+        });
+
+        if (updateRes.ok) {
+          setSuccess("Resume PDF uploaded to Cloudinary and saved to Site Settings successfully!");
+        } else {
+          setSuccess("Resume uploaded to Cloudinary! Click 'Save Settings' to confirm.");
+        }
+        setTimeout(() => setSuccess(null), 4000);
+      } else {
+        setError(uploadData.error || "Failed to upload resume to Cloudinary.");
+      }
+    } catch {
+      setError("Network error during resume upload.");
+    } finally {
+      setUploadingResume(false);
+      e.target.value = "";
     }
   };
 
@@ -508,6 +581,71 @@ export default function AdminSettingsPage() {
                   placeholder="https://www.linkedin.com/in/kohinoor-singh-5137b9413/"
                   className="w-full px-4 py-3 text-base rounded-xl bg-[#FAF8F5] dark:bg-[#0B0F24] border border-black/15 dark:border-white/15 text-ink dark:text-cream focus:outline-none focus:ring-2 focus:ring-royal"
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Resume / CV Document (Cloudinary PDF) */}
+          <div className="rounded-3xl p-6 sm:p-8 bg-white dark:bg-[#121730] border border-black/10 dark:border-white/10 space-y-6">
+            <h2 className="text-lg font-bold text-ink dark:text-cream border-b border-black/5 dark:border-white/5 pb-3">
+              4. Resume / CV Document (Cloudinary PDF)
+            </h2>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="w-16 h-16 rounded-2xl bg-lavender/50 dark:bg-royal/20 border border-royal/30 flex items-center justify-center text-royal dark:text-[#7888FF] shrink-0">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+
+              <div className="flex-1 space-y-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <label className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-royal text-white font-medium text-xs uppercase tracking-wider cursor-pointer hover:bg-royal/90 transition-colors shadow-sm select-none">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    {uploadingResume ? "Uploading to Cloudinary…" : "Upload Resume PDF"}
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      className="hidden"
+                      disabled={uploadingResume}
+                      onChange={handleResumeFileChange}
+                    />
+                  </label>
+
+                  {formData.resumeUrl && (
+                    <a
+                      href={formData.resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-black/15 dark:border-white/15 text-xs font-semibold text-royal dark:text-[#7888FF] hover:bg-royal/10 dark:hover:bg-royal/20 transition-colors"
+                    >
+                      <span>View Current PDF</span>
+                      <span>↗</span>
+                    </a>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label
+                    htmlFor="field-resume-url"
+                    className="font-mono text-[11px] uppercase tracking-wider text-muted dark:text-[#A8A8B8]"
+                  >
+                    Current Resume URL (Cloudinary / File):
+                  </label>
+                  <input
+                    id="field-resume-url"
+                    type="text"
+                    value={formData.resumeUrl}
+                    onChange={(e) => handleChange("resumeUrl", e.target.value)}
+                    placeholder="/resume/kohinoor-singh-resume.pdf"
+                    className="w-full px-4 py-2.5 text-sm rounded-xl bg-[#FAF8F5] dark:bg-[#0B0F24] border border-black/15 dark:border-white/15 text-ink dark:text-cream focus:outline-none focus:ring-2 focus:ring-royal"
+                  />
+                </div>
+                <span className="text-[11px] font-mono text-muted dark:text-[#A8A8B8] block">
+                  PDF documents only (Max 5MB). Uploaded directly to Cloudinary storage — public assets are read-only on Vercel at runtime.
+                </span>
               </div>
             </div>
           </div>

@@ -37,6 +37,17 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Test, Audit & Lighthouse reports
+*lighthouse*.json
+*lighthouse*.html
+lighthouse-results.json
+*.report.json
+*.report.html
+reports/
+coverage/
+.nyc_output/
+test-results/
+
 # Vercel & Turborepo
 .vercel
 .turbo
