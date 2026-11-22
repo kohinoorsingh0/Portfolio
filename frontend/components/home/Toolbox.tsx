@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { SkillData } from "@/lib/api";
 
-const capabilities = [
+const defaultCapabilities = [
   {
     number: "01",
     group: "Frontend",
@@ -23,14 +24,53 @@ const capabilities = [
   },
 ];
 
-export default function Toolbox() {
+interface ToolboxProps {
+  skills?: SkillData[];
+}
+
+export default function Toolbox({ skills }: ToolboxProps) {
+  const capabilities = skills && skills.length > 0
+    ? [
+        {
+          number: "01",
+          group: "Frontend",
+          items: skills
+            .filter((s) => s.category === "Frontend" && s.visible !== false)
+            .map((s) => s.name),
+        },
+        {
+          number: "02",
+          group: "Backend",
+          items: skills
+            .filter((s) => s.category === "Backend" && s.visible !== false)
+            .map((s) => s.name),
+        },
+        {
+          number: "03",
+          group: "Database",
+          items: skills
+            .filter((s) => s.category === "Database" && s.visible !== false)
+            .map((s) => s.name),
+        },
+        {
+          number: "04",
+          group: "Tools & DevOps",
+          items: skills
+            .filter((s) => s.category === "Tools & DevOps" && s.visible !== false)
+            .map((s) => s.name),
+        },
+      ].map((grp, idx) => ({
+        ...grp,
+        items: grp.items.length > 0 ? grp.items : defaultCapabilities[idx].items,
+      }))
+    : defaultCapabilities;
   return (
     <section className="relative overflow-hidden bg-cream dark:bg-navy py-16 sm:py-24 lg:py-32 transition-colors duration-300 border-t border-black/5 dark:border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] items-start gap-12 lg:gap-16">
           {/* Left Column: Sticky Lead */}
           <div className="lg:sticky lg:top-32">
-            <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.08em] text-coral mb-3 block">
+            <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.08em] text-[#C83C1A] dark:text-coral mb-3 block">
               THE TOOLBOX
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-black tracking-[-0.035em] leading-[1.04] text-ink dark:text-cream mb-6 sm:mb-8">
@@ -55,7 +95,7 @@ export default function Toolbox() {
                 className="border-b border-black/10 dark:border-white/10 py-6 sm:py-8 grid grid-cols-[36px_1fr] sm:grid-cols-[55px_1fr_1.35fr] items-baseline sm:items-center gap-x-3 gap-y-2 sm:gap-4 transition-all duration-200 hover:bg-lavender dark:hover:bg-[#1E2650]/60 hover:px-4 sm:hover:px-6 rounded-xl group"
               >
                 {/* Number */}
-                <span className="font-mono text-xs sm:text-sm font-bold text-coral">
+                <span className="font-mono text-xs sm:text-sm font-bold text-[#C83C1A] dark:text-coral">
                   {cap.number}
                 </span>
 

@@ -29,11 +29,43 @@ export const JOURNEY_ENTRIES: TimelineEntry[] = [
   },
 ];
 
+interface RawJourneyItem {
+  type?: string;
+  yearLabel?: string;
+  year?: string;
+  title: string;
+  organisation: string;
+  description?: string;
+  body?: string;
+}
+
 interface TimelineProps {
-  entries?: TimelineEntry[];
+  entries?: RawJourneyItem[];
 }
 
 export default function Timeline({ entries = JOURNEY_ENTRIES }: TimelineProps) {
+  const normalizedEntries: TimelineEntry[] = (entries && entries.length > 0 ? entries : JOURNEY_ENTRIES).map((e) => {
+    const rawType = (e.type || "EXPERIENCE").toUpperCase();
+    const type: "EXPERIENCE" | "EDUCATION" | "CERTIFICATION" =
+      rawType.includes("EDU")
+        ? "EDUCATION"
+        : rawType.includes("CERT")
+        ? "CERTIFICATION"
+        : "EXPERIENCE";
+
+    const body =
+      ("description" in e && e.description) ||
+      ("body" in e && e.body) ||
+      "";
+
+    return {
+      type,
+      year: "yearLabel" in e ? e.yearLabel : e.year,
+      title: e.title,
+      organisation: e.organisation,
+      body,
+    };
+  });
   return (
     <section className="relative overflow-hidden bg-cream dark:bg-navy py-16 sm:py-24 lg:py-32 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,7 +92,7 @@ export default function Timeline({ entries = JOURNEY_ENTRIES }: TimelineProps) {
           />
 
           <div className="space-y-10">
-            {entries.map((item, index) => (
+            {normalizedEntries.map((item, index) => (
               <article
                 key={`${item.title}-${index}`}
                 className="grid grid-cols-[28%_74px_1fr] items-center group"
@@ -106,7 +138,7 @@ export default function Timeline({ entries = JOURNEY_ENTRIES }: TimelineProps) {
         </div>
 
         {/* Mobile Stacked Timeline (block md:hidden) */}
-        <div className="block md:hidden relative">
+        <div className="block md:hidden relative pr-2">
           {/* Vertical Gradient Line */}
           <div
             className="absolute top-5 bottom-5 left-[21px] w-[2px] bg-gradient-to-b from-royal via-royal/70 to-coral dark:from-[#7888FF] dark:to-coral"
@@ -114,10 +146,10 @@ export default function Timeline({ entries = JOURNEY_ENTRIES }: TimelineProps) {
           />
 
           <div className="space-y-8">
-            {entries.map((item, index) => (
+            {normalizedEntries.map((item, index) => (
               <article
                 key={`mobile-${item.title}-${index}`}
-                className="relative flex items-start gap-4"
+                className="relative flex items-start gap-3.5 sm:gap-4"
               >
                 {/* Numbered Dot */}
                 <div className="w-11 h-11 shrink-0 rounded-full border-2 border-royal dark:border-[#7888FF] bg-cream dark:bg-[#151C3B] flex items-center justify-center shadow-xs relative z-10">

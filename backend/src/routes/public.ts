@@ -12,9 +12,9 @@ const router = Router();
 // Rate limiter: 100 requests per minute per IP from Step 8
 router.use(publicGetRateLimiter);
 
-// Cache-Control header: public, max-age=60
+// Cache-Control header: allow CDN caching with instant client revalidation
 router.use((_req: Request, res: Response, next: NextFunction) => {
-  res.setHeader("Cache-Control", "public, max-age=60");
+  res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=30");
   next();
 });
 

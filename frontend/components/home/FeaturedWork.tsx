@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { ProjectData, FALLBACK_PROJECTS } from "@/lib/api";
 
-const fixflowStack = [
+const defaultStack = [
   "React 19",
   "Tailwind 4",
   "Express 5",
@@ -10,7 +11,17 @@ const fixflowStack = [
   "PWA",
 ];
 
-export default function FeaturedWork() {
+interface FeaturedWorkProps {
+  projects?: ProjectData[];
+}
+
+export default function FeaturedWork({ projects }: FeaturedWorkProps) {
+  const activeProjects = projects && projects.length > 0 ? projects : FALLBACK_PROJECTS;
+  const featured =
+    activeProjects.find((p) => p.featured) || activeProjects[0] || FALLBACK_PROJECTS[0];
+
+  const stack = featured.stack && featured.stack.length > 0 ? featured.stack : defaultStack;
+  const metricText = featured.resultText || "37,612 LOC · 183 FILES · 3 ROLES";
   return (
     <section className="relative overflow-hidden bg-ink text-white py-20 sm:py-28 lg:py-32 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,19 +55,17 @@ export default function FeaturedWork() {
 
               {/* Title */}
               <h3 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#14121F] mb-4">
-                FixFlow
+                {featured.title}
               </h3>
 
               {/* Description */}
               <p className="text-[#14121F]/80 text-sm sm:text-base leading-relaxed max-w-md mb-6">
-                Campus complaint workflow system with 3-tier role management, SLA
-                tracking, automated duplicate detection, and AI triage powered by
-                Gemini.
+                {featured.shortDescription || featured.longDescription}
               </p>
 
               {/* Tech Stack Chips */}
               <div className="flex flex-wrap gap-2 mb-8">
-                {fixflowStack.map((tech) => (
+                {stack.map((tech) => (
                   <span
                     key={tech}
                     className="bg-white/60 border border-[#14121F]/20 text-[#14121F] font-mono text-xs font-semibold px-3 py-1 rounded-full"
@@ -70,7 +79,7 @@ export default function FeaturedWork() {
             {/* Links Row */}
             <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-[#14121F]/15">
               <Link
-                href="/projects/fixflow"
+                href={`/projects/${featured.slug}`}
                 className="font-bold text-sm sm:text-base text-[#14121F] border-b-2 border-[#14121F] pb-0.5 inline-flex items-center gap-2 hover:gap-3 transition-all duration-200"
               >
                 <span>Read case study</span>
@@ -78,17 +87,19 @@ export default function FeaturedWork() {
                   →
                 </span>
               </Link>
-              <a
-                href="https://github.com/FixFlow-Official/FixFlow"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-bold text-sm sm:text-base text-[#14121F] border-b-2 border-[#14121F] pb-0.5 inline-flex items-center gap-2 hover:gap-3 transition-all duration-200"
-              >
-                <span>GitHub</span>
-                <span className="text-base" aria-hidden="true">
-                  ↗
-                </span>
-              </a>
+              {featured.githubUrl && (
+                <a
+                  href={featured.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-sm sm:text-base text-[#14121F] border-b-2 border-[#14121F] pb-0.5 inline-flex items-center gap-2 hover:gap-3 transition-all duration-200"
+                >
+                  <span>GitHub</span>
+                  <span className="text-base" aria-hidden="true">
+                    ↗
+                  </span>
+                </a>
+              )}
             </div>
           </div>
 
@@ -103,7 +114,7 @@ export default function FeaturedWork() {
                   <span className="w-2 h-2 rounded-full border border-[#14121F] bg-[#C8F542]" />
                 </div>
                 <span className="font-mono text-[10px] text-[#14121F]/70 tracking-wider">
-                  fixflow.internal
+                  {featured.slug}.app
                 </span>
                 <div className="w-6" />
               </div>
@@ -175,7 +186,7 @@ export default function FeaturedWork() {
 
             {/* Verified Real Metric Floating Stamp */}
             <div className="absolute -bottom-3 -right-2 sm:-bottom-4 sm:-right-4 font-mono font-bold text-[10px] sm:text-xs uppercase tracking-wide bg-white border border-[#14121F] rounded-full px-4 py-2 sm:px-5 sm:py-2.5 shadow-[4px_5px_0_#14121F] rotate-[-4deg] text-[#14121F] z-20 select-none">
-              37,612 LOC · 183 FILES · 3 ROLES
+              {metricText}
             </div>
           </div>
         </article>

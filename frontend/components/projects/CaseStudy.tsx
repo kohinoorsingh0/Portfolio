@@ -100,7 +100,7 @@ export default function CaseStudy({ project }: { project: CaseStudyData }) {
           </div>
 
           {/* Hero Title */}
-          <h1 className="font-sans text-5xl sm:text-7xl md:text-8xl lg:text-[108px] xl:text-[124px] font-black tracking-[-0.06em] leading-[0.92] text-[#14121F] mb-6 sm:mb-8">
+          <h1 className="font-sans text-4xl xs:text-5xl sm:text-7xl md:text-8xl lg:text-[108px] xl:text-[124px] font-black tracking-[-0.06em] leading-[0.92] text-[#14121F] mb-6 sm:mb-8 break-words">
             {project.title}
           </h1>
 
@@ -139,9 +139,9 @@ export default function CaseStudy({ project }: { project: CaseStudyData }) {
                 <div className="p-6 sm:p-8 flex flex-col justify-between">
                   <div>
                     <span className="inline-block w-12 h-2.5 bg-[#FF5C38] rounded-xs mb-3" />
-                    <h3 className="font-sans font-black text-2xl sm:text-3xl text-[#14121F] tracking-tight mb-2">
+                    <p className="font-sans font-black text-2xl sm:text-3xl text-[#14121F] tracking-tight mb-2" aria-hidden="true">
                       {project.title}
-                    </h3>
+                    </p>
                     <p className="text-xs sm:text-sm text-[#14121F]/70 max-w-md line-clamp-2">
                       {project.desc}
                     </p>
@@ -289,9 +289,9 @@ export default function CaseStudy({ project }: { project: CaseStudyData }) {
                   verified repository
                 </span>
               </div>
-              <h4 className="font-sans font-black text-xl text-[#14121F] mb-1">
+              <h3 className="font-sans font-black text-xl text-[#14121F] mb-1">
                 {project.title}
-              </h4>
+              </h3>
               <p className="text-xs text-[#14121F]/70 mb-4">{project.metric}</p>
               <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
                 <div className="bg-[#E3DDFF] p-2 rounded font-bold text-[#14121F]">
@@ -314,7 +314,7 @@ export default function CaseStudy({ project }: { project: CaseStudyData }) {
           </div>
 
           {/* Right Detail / Interaction Shot matching Figma .detail-shot */}
-          <div className="rounded-[28px] bg-[#1A1829] border border-white/10 p-8 sm:p-12 flex flex-col justify-between">
+          <div className="rounded-[28px] bg-[#1A1829] border border-white/10 p-6 sm:p-12 flex flex-col justify-between">
             <div>
               <span className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-coral block mb-4">
                 DETAIL / INTERACTION
@@ -326,27 +326,27 @@ export default function CaseStudy({ project }: { project: CaseStudyData }) {
 
             {/* Simulated UI state blocks matching Figma: .detail-ui */}
             <div className="space-y-4">
-              <div className="h-14 rounded-xl bg-[#E9E5FF]/10 border border-[#E9E5FF]/20 px-5 flex items-center justify-between">
-                <span className="font-mono text-xs font-semibold text-white/90">
+              <div className="h-14 rounded-xl bg-[#E9E5FF]/10 border border-[#E9E5FF]/20 px-4 sm:px-5 flex items-center justify-between">
+                <span className="font-mono text-[11px] sm:text-xs font-semibold text-white/90 truncate mr-2">
                   01 / Role-Based Authentication
                 </span>
-                <span className="font-mono text-[11px] font-bold text-lime">
+                <span className="font-mono text-[10px] sm:text-[11px] font-bold text-lime shrink-0">
                   OTP VERIFIED
                 </span>
               </div>
-              <div className="h-14 rounded-xl bg-lime/10 border border-lime/30 px-5 ml-[8%] flex items-center justify-between">
-                <span className="font-mono text-xs font-semibold text-white/90">
+              <div className="h-14 rounded-xl bg-lime/10 border border-lime/30 px-4 sm:px-5 ml-0 sm:ml-[8%] flex items-center justify-between">
+                <span className="font-mono text-[11px] sm:text-xs font-semibold text-white/90 truncate mr-2">
                   02 / AI Triage &amp; Duplicate Check
                 </span>
-                <span className="font-mono text-[11px] font-bold text-lime">
+                <span className="font-mono text-[10px] sm:text-[11px] font-bold text-lime shrink-0">
                   AUTOMATED
                 </span>
               </div>
-              <div className="h-14 rounded-xl bg-coral/10 border border-coral/30 px-5 w-[90%] flex items-center justify-between">
-                <span className="font-mono text-xs font-semibold text-white/90">
+              <div className="h-14 rounded-xl bg-coral/10 border border-coral/30 px-4 sm:px-5 w-full sm:w-[90%] flex items-center justify-between">
+                <span className="font-mono text-[11px] sm:text-xs font-semibold text-white/90 truncate mr-2">
                   03 / SLA Breach Escalation
                 </span>
-                <span className="font-mono text-[11px] font-bold text-coral">
+                <span className="font-mono text-[10px] sm:text-[11px] font-bold text-coral shrink-0">
                   REAL-TIME
                 </span>
               </div>

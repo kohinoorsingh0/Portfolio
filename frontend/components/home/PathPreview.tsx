@@ -11,7 +11,7 @@ export default function PathPreview() {
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         {/* Eyebrow */}
-        <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em] text-coral mb-4 block">
+        <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em] text-[#C83C1A] dark:text-coral mb-4 block">
           THE PATH SO FAR
         </span>
 

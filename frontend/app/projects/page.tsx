@@ -1,14 +1,19 @@
 import type { Metadata } from "next";
-import { constructMetadata } from "@/lib/seo";
+import { constructMetadata, siteUrl } from "@/lib/seo";
 import { ProjectsList } from "@/components/projects/ProjectCard";
+import { getProjects } from "@/lib/api";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Projects — Kohinoor Singh",
+  title: "Projects",
   description:
     "A collection of product stories spanning interface craft, full-stack systems, and the details that make software feel considered.",
+  canonicalUrl: `${siteUrl}/projects`,
+  image: "/images/og-image.png",
 });
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects();
+
   return (
     <>
       {/* Page Hero matching Figma: .page-hero */}
@@ -50,7 +55,8 @@ export default function ProjectsPage() {
       {/* Projects Work Section matching Figma: .work.work-page bg-[#0F1530] */}
       <section className="w-full bg-[#0F1530] text-[#FAF8F4] py-16 sm:py-20 md:py-24 border-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ProjectsList />
+          <h2 className="sr-only">Selected Projects Portfolio</h2>
+          <ProjectsList projects={projects} />
         </div>
       </section>
     </>

@@ -3,14 +3,24 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { SiteSettingsData } from "@/lib/api";
 
-const roles = [
+const defaultRoles = [
   "interface craftsman",
   "full-stack developer",
   "curious problem solver",
 ];
 
-export default function Hero() {
+interface HeroProps {
+  settings?: Partial<SiteSettingsData>;
+}
+
+export default function Hero({ settings }: HeroProps) {
+  const customRole = settings?.role?.toLowerCase();
+  const roles = customRole
+    ? [customRole, "interface craftsman", "curious problem solver"]
+    : defaultRoles;
+
   const [roleIndex, setRoleIndex] = useState(0);
 
   useEffect(() => {
@@ -18,7 +28,15 @@ export default function Hero() {
       setRoleIndex((prev) => (prev + 1) % roles.length);
     }, 2800);
     return () => clearInterval(timer);
-  }, []);
+  }, [roles.length]);
+
+  const availabilityText =
+    settings?.availability || "Available for internships & roles";
+  const introText =
+    settings?.tagline ||
+    "I turn ambitious ideas into thoughtful digital experiences — pairing expressive interfaces with reliable, scalable code.";
+  const photoUrl =
+    settings?.profilePhotoUrl || "/images/kohinoor-watercolor.jpg";
 
   return (
     <section className="relative overflow-hidden bg-cream dark:bg-navy py-8 sm:py-14 lg:py-20 transition-colors duration-300">
@@ -43,14 +61,14 @@ export default function Hero() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#42b883]" />
               </span>
               <span className="font-mono text-[11px] sm:text-xs font-semibold uppercase tracking-[0.06em] text-muted dark:text-[#A0A0B0]">
-                Available for internships &amp; roles
+                {availabilityText}
               </span>
             </div>
 
             {/* Eyebrow & Line */}
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 min-h-[28px]">
               <span className="font-mono text-xs uppercase tracking-[0.08em] font-semibold text-muted dark:text-[#A0A0B0]">
-                HELLO, I&apos;M KOHINOOR SINGH —
+                HELLO, I&apos;M {settings?.name ? settings.name.toUpperCase() : "KOHINOOR SINGH"} —
               </span>
               <strong className="font-sans font-bold text-base sm:text-lg text-royal dark:text-[#7888FF]">
                 {roles[roleIndex]}
@@ -58,54 +76,86 @@ export default function Hero() {
             </div>
 
             {/* Headline */}
-            <h1 className="text-[40px] sm:text-[58px] md:text-[70px] lg:text-[84px] xl:text-[96px] font-black leading-[0.93] tracking-[-0.04em] text-ink dark:text-cream mb-6">
-              I build{" "}
-              <span className="relative inline-block">
-                fast,
-                {/* Hand-drawn coral circle around fast, */}
-                <svg
-                  className="absolute -inset-x-3 -inset-y-1.5 w-[calc(100%+24px)] h-[calc(100%+12px)] pointer-events-none text-coral -rotate-2"
-                  viewBox="0 0 100 45"
-                  fill="none"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <ellipse
-                    cx="50"
-                    cy="22.5"
-                    rx="46"
-                    ry="18"
-                    stroke="currentColor"
-                    strokeWidth="3.5"
-                  />
-                </svg>
-              </span>
-              <br />
-              <span className="relative inline-block z-10 my-0.5">
-                <span className="relative z-10 text-ink px-1.5 sm:px-2">
-                  beautiful
-                </span>
-                <span
-                  className="absolute inset-0 bg-lime -rotate-1 rounded-md -z-0"
-                  aria-hidden="true"
-                />
-              </span>{" "}
-              web
-              <br />
-              products.
+            <h1 className="text-[36px] xs:text-[40px] sm:text-[58px] md:text-[70px] lg:text-[84px] xl:text-[96px] font-black leading-[0.93] tracking-[-0.04em] text-ink dark:text-cream mb-6">
+              {settings?.heroTitle && settings.heroTitle !== "I build fast, beautiful web products." ? (
+                // Custom headline from Admin Settings
+                (() => {
+                  const title = settings.heroTitle;
+                  const hl = (settings.heroHighlightWord || "beautiful").trim();
+                  if (hl && title.toLowerCase().includes(hl.toLowerCase())) {
+                    const idx = title.toLowerCase().indexOf(hl.toLowerCase());
+                    const before = title.slice(0, idx);
+                    const match = title.slice(idx, idx + hl.length);
+                    const after = title.slice(idx + hl.length);
+                    return (
+                      <>
+                        {before}
+                        <span className="relative inline-block z-10 my-0.5">
+                          <span className="relative z-10 text-ink px-1.5 sm:px-2">
+                            {match}
+                          </span>
+                          <span
+                            className="absolute inset-0 bg-lime -rotate-1 rounded-md -z-0"
+                            aria-hidden="true"
+                          />
+                        </span>
+                        {after}
+                      </>
+                    );
+                  }
+                  return title;
+                })()
+              ) : (
+                // Signature Figma Headline
+                <>
+                  I build{" "}
+                  <span className="relative inline-block">
+                    fast,
+                    {/* Hand-drawn coral circle around fast, */}
+                    <svg
+                      className="absolute -inset-x-2 sm:-inset-x-3 -inset-y-1.5 w-[calc(100%+16px)] sm:w-[calc(100%+24px)] h-[calc(100%+12px)] pointer-events-none text-coral -rotate-2"
+                      viewBox="0 0 100 45"
+                      fill="none"
+                      preserveAspectRatio="none"
+                      aria-hidden="true"
+                    >
+                      <ellipse
+                        cx="50"
+                        cy="22.5"
+                        rx="46"
+                        ry="18"
+                        stroke="currentColor"
+                        strokeWidth="3.5"
+                      />
+                    </svg>
+                  </span>
+                  <br />
+                  <span className="relative inline-block z-10 my-0.5">
+                    <span className="relative z-10 text-ink px-1.5 sm:px-2">
+                      {settings?.heroHighlightWord || "beautiful"}
+                    </span>
+                    <span
+                      className="absolute inset-0 bg-lime -rotate-1 rounded-md -z-0"
+                      aria-hidden="true"
+                    />
+                  </span>{" "}
+                  web
+                  <br />
+                  products.
+                </>
+              )}
             </h1>
 
             {/* Intro paragraph */}
             <p className="text-muted dark:text-[#A8A8B8] text-base sm:text-lg max-w-[580px] leading-relaxed mb-8">
-              I turn ambitious ideas into thoughtful digital experiences — pairing
-              expressive interfaces with reliable, scalable code.
+              {introText}
             </p>
 
             {/* Action buttons */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 w-full sm:w-auto">
               <Link
                 href="/projects"
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full bg-ink text-cream hover:bg-ink/90 hover:shadow-[0_8px_0_#FF5C38] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] font-bold text-sm sm:text-base transition-all duration-200 dark:bg-cream dark:text-ink dark:hover:bg-white dark:hover:shadow-[0_8px_0_#FF5C38]"
+                className="inline-flex items-center justify-center min-h-[48px] gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full bg-ink text-cream hover:bg-ink/90 hover:shadow-[0_8px_0_#FF5C38] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] font-bold text-sm sm:text-base transition-all duration-200 dark:bg-cream dark:text-ink dark:hover:bg-white dark:hover:shadow-[0_8px_0_#FF5C38]"
               >
                 <span>Explore my work</span>
                 <span className="text-lg leading-none" aria-hidden="true">
@@ -114,7 +164,7 @@ export default function Hero() {
               </Link>
               <Link
                 href="/about"
-                className="inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full border border-ink text-ink bg-transparent hover:shadow-[0_8px_0_#FF5C38] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] font-bold text-sm sm:text-base transition-all duration-200 dark:border-cream/40 dark:text-cream dark:hover:border-cream dark:hover:shadow-[0_8px_0_#FF5C38]"
+                className="inline-flex items-center justify-center min-h-[48px] gap-2 px-6 sm:px-7 py-3.5 sm:py-4 rounded-full border border-ink text-ink bg-transparent hover:shadow-[0_8px_0_#FF5C38] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] font-bold text-sm sm:text-base transition-all duration-200 dark:border-cream/40 dark:text-cream dark:hover:border-cream dark:hover:shadow-[0_8px_0_#FF5C38]"
               >
                 <span>Meet the developer</span>
                 <span className="text-lg leading-none" aria-hidden="true">
@@ -125,21 +175,21 @@ export default function Hero() {
           </div>
 
           {/* Right Column: Arched Photo & Floating Stickers */}
-          <div className="relative w-full max-w-[340px] sm:max-w-[420px] lg:max-w-[440px] mx-auto mt-6 lg:mt-0">
+          <div className="relative w-full max-w-[300px] xs:max-w-[340px] sm:max-w-[420px] lg:max-w-[440px] mx-auto mt-6 lg:mt-0">
             {/* Arched Photo Frame with Watercolor Portrait */}
-            <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[540px] bg-white rounded-t-[180px] sm:rounded-t-[220px] rounded-b-[28px] sm:rounded-b-[32px] overflow-hidden shadow-[16px_16px_0_#E9E5FF] dark:shadow-[16px_16px_0_#182046] rotate-[1.5deg] hover:rotate-0 transition-transform duration-500 border border-[#DDD6FE] dark:border-white/10 group">
+            <div className="relative w-full h-[360px] xs:h-[400px] sm:h-[420px] lg:h-[540px] bg-white rounded-t-[160px] sm:rounded-t-[220px] rounded-b-[24px] sm:rounded-b-[32px] overflow-hidden shadow-[12px_12px_0_#E9E5FF] sm:shadow-[16px_16px_0_#E9E5FF] dark:shadow-[12px_12px_0_#182046] sm:dark:shadow-[16px_16px_0_#182046] rotate-[1.5deg] hover:rotate-0 transition-transform duration-500 border border-[#DDD6FE] dark:border-white/10 group">
               <Image
-                src="/images/kohinoor-watercolor.jpg"
+                src={photoUrl}
                 alt="Kohinoor Singh"
                 fill
-                priority
+                priority={true}
                 sizes="(max-width: 640px) 340px, (max-width: 1024px) 420px, 440px"
                 className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
               />
             </div>
 
             {/* Floating Sticker 1: REACT ↗ */}
-            <div className="absolute top-[16%] -left-3 sm:-left-6 rotate-[-8deg] z-20 bg-white dark:bg-[#182042] border border-[#DCD6EA] dark:border-white/10 rounded-xl px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-[4px_5px_0_rgba(20,18,31,0.12)] dark:shadow-[4px_5px_0_rgba(0,0,0,0.5)] font-mono font-bold text-xs sm:text-sm text-royal dark:text-[#7888FF] flex items-center gap-1.5 select-none pointer-events-none sm:pointer-events-auto">
+            <div className="absolute top-[16%] left-0 sm:-left-6 rotate-[-8deg] z-20 bg-white dark:bg-[#182042] border border-[#DCD6EA] dark:border-white/10 rounded-xl px-2.5 py-1.5 sm:px-4 sm:py-2.5 shadow-[3px_4px_0_rgba(20,18,31,0.12)] sm:shadow-[4px_5px_0_rgba(20,18,31,0.12)] dark:shadow-[3px_4px_0_rgba(0,0,0,0.5)] font-mono font-bold text-[11px] sm:text-sm text-royal dark:text-[#7888FF] flex items-center gap-1.5 select-none pointer-events-none sm:pointer-events-auto">
               <span>REACT</span>
               <span className="text-coral" aria-hidden="true">
                 ↗
@@ -147,13 +197,13 @@ export default function Hero() {
             </div>
 
             {/* Floating Sticker 2: NODE.JS */}
-            <div className="absolute bottom-[20%] -right-3 sm:-right-6 rotate-[6deg] z-20 bg-lime border border-[#B6E338] rounded-xl px-3.5 py-2 sm:px-4 sm:py-2.5 shadow-[4px_5px_0_rgba(20,18,31,0.12)] font-mono font-bold text-xs sm:text-sm text-ink select-none pointer-events-none sm:pointer-events-auto">
+            <div className="absolute bottom-[20%] right-0 sm:-right-6 rotate-[6deg] z-20 bg-lime border border-[#B6E338] rounded-xl px-2.5 py-1.5 sm:px-4 sm:py-2.5 shadow-[3px_4px_0_rgba(20,18,31,0.12)] sm:shadow-[4px_5px_0_rgba(20,18,31,0.12)] font-mono font-bold text-[11px] sm:text-sm text-ink select-none pointer-events-none sm:pointer-events-auto">
               <span>NODE.JS</span>
             </div>
 
             {/* Floating Sticker 3: </> badge */}
             <div
-              className="absolute top-[6%] right-2 sm:right-4 rotate-[6deg] z-20 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-coral text-white flex items-center justify-center font-mono font-bold text-sm sm:text-base shadow-[4px_5px_0_rgba(20,18,31,0.14)] select-none"
+              className="absolute top-[6%] right-2 sm:right-4 rotate-[6deg] z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-coral text-white flex items-center justify-center font-mono font-bold text-xs sm:text-base shadow-[3px_4px_0_rgba(20,18,31,0.14)] sm:shadow-[4px_5px_0_rgba(20,18,31,0.14)] select-none"
               aria-label="Code badge"
             >
               <span>&lt;/&gt;</span>

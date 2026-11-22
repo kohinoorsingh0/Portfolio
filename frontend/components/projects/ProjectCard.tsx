@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { ProjectData } from "@/lib/api";
 
 export interface ProjectItem {
   slug: string;
@@ -85,7 +86,7 @@ export default function ProjectCard({ project }: { project: ProjectItem }) {
           </div>
 
           {/* Title */}
-          <h3 className="font-sans text-4xl sm:text-5xl lg:text-[62px] font-black tracking-[-0.05em] leading-[0.98] text-[#14121F] mb-4 sm:mb-5">
+          <h3 className="font-sans text-3xl xs:text-4xl sm:text-5xl lg:text-[62px] font-black tracking-[-0.05em] leading-[0.98] text-[#14121F] mb-4 sm:mb-5">
             {project.title}
           </h3>
 
@@ -184,9 +185,9 @@ export default function ProjectCard({ project }: { project: ProjectItem }) {
             <div className="p-4 sm:p-6 flex flex-col justify-between">
               <div>
                 <span className="inline-block w-10 sm:w-12 h-2 bg-[#FF5C38] rounded-xs mb-2" />
-                <h4 className="font-sans font-black text-lg sm:text-2xl text-[#14121F] tracking-tight leading-none mb-2">
+                <p className="font-sans font-black text-lg sm:text-2xl text-[#14121F] tracking-tight leading-none mb-2" aria-hidden="true">
                   {project.title}
-                </h4>
+                </p>
                 <div className="space-y-1.5">
                   <span className="block w-4/5 h-1.5 bg-[#14121F]/15 rounded-xs" />
                   <span className="block w-3/5 h-1.5 bg-[#14121F]/10 rounded-xs" />
@@ -224,10 +225,54 @@ export default function ProjectCard({ project }: { project: ProjectItem }) {
   );
 }
 
-export function ProjectsList() {
+interface ProjectsListProps {
+  projects?: ProjectData[];
+}
+
+export function ProjectsList({ projects }: ProjectsListProps) {
   const [activeFilter, setActiveFilter] = useState<string>("All");
 
-  const filteredProjects = SEEDED_PROJECTS.filter((project) => {
+  const projectItems: ProjectItem[] =
+    projects && projects.length > 0
+      ? projects.map((p, idx) => {
+          const stackList = Array.isArray(p.stack) ? p.stack : [];
+          const isFullStack = stackList.some(
+            (s) =>
+              typeof s === "string" &&
+              (s.toLowerCase().includes("express") ||
+                s.toLowerCase().includes("node") ||
+                s.toLowerCase().includes("mongo"))
+          );
+          const type = isFullStack ? "Full-Stack" : "Frontend";
+          const categories = isFullStack
+            ? ["Full-Stack", "Backend", "Frontend"]
+            : ["Frontend"];
+          const palette: "violet" | "orange" | "green" =
+            idx % 3 === 0 ? "violet" : idx % 3 === 1 ? "orange" : "green";
+
+          return {
+            slug: p.slug,
+            number: String(idx + 1).padStart(2, "0"),
+            title: p.title,
+            type,
+            categories,
+            featured: p.featured,
+            palette,
+            metric: p.resultText || (p.featured ? "Featured Project" : "Open Source"),
+            desc: p.shortDescription || p.longDescription,
+            stack: stackList,
+            github: p.githubUrl,
+            live: p.liveUrl || undefined,
+            browserUrl: p.githubUrl
+              ? p.githubUrl.replace(/^https?:\/\//, "")
+              : `${p.slug}.app`,
+          };
+        })
+      : projects && projects.length === 0
+      ? []
+      : SEEDED_PROJECTS;
+
+  const filteredProjects = projectItems.filter((project) => {
     if (activeFilter === "All") return true;
     if (project.type.toLowerCase() === activeFilter.toLowerCase()) return true;
     if (
@@ -253,7 +298,7 @@ export function ProjectsList() {
         <div
           className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
           role="group"
-          aria-label="Filter projects"
+          aria-label="Filter projects by category"
         >
           {FILTER_OPTIONS.map((filter) => {
             const isActive = activeFilter === filter;
@@ -262,7 +307,8 @@ export function ProjectsList() {
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter(filter)}
-                className={`whitespace-nowrap px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                aria-pressed={isActive}
+                className={`whitespace-nowrap min-h-[44px] inline-flex items-center justify-center px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer focus-visible:outline-2 focus-visible:outline-lime focus-visible:outline-offset-2 ${
                   isActive
                     ? "bg-[#C8F542] text-[#14121F] border border-[#C8F542] shadow-sm font-bold"
                     : "text-[#AAA5B5] border border-[#45404F] hover:bg-[#C8F542] hover:text-[#14121F] hover:border-[#C8F542] bg-transparent"
@@ -284,7 +330,9 @@ export function ProjectsList() {
         ) : (
           <div className="text-center py-20 rounded-2xl border border-white/10 bg-white/5 text-[#AAA5B5]">
             <p className="text-base font-medium">
-              No projects found for category &ldquo;{activeFilter}&rdquo;.
+              {projectItems.length === 0
+                ? "Content coming soon"
+                : `No projects found for category "${activeFilter}".`}
             </p>
           </div>
         )}

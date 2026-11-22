@@ -1,16 +1,29 @@
 import type { Metadata } from "next";
-import { constructMetadata } from "@/lib/seo";
+import { constructMetadata, siteUrl, contactFaqJsonLd } from "@/lib/seo";
 import ContactForm from "@/components/contact/ContactForm";
+import CopyEmailButton from "@/components/contact/CopyEmailButton";
+import { getSiteSettings } from "@/lib/api";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Contact — Kohinoor Singh",
+  title: "Contact",
   description:
     "Have a good idea? I'd love to hear it. Get in touch with Kohinoor Singh for internships, junior roles, or collaborative projects.",
+  canonicalUrl: `${siteUrl}/contact`,
+  image: "/images/og-image.png",
 });
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const site = await getSiteSettings();
+
   return (
     <section className="relative overflow-hidden bg-[#FF5C38] text-ink min-h-[calc(100vh-6rem)] pt-8 sm:pt-14 pb-20 sm:pb-32 transition-colors duration-300">
+      {/* FAQ Schema for Contact Page (Rich Results & AEO) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(contactFaqJsonLd),
+        }}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Contact Top Hero matching Figma */}
         <div className="max-w-4xl">
@@ -41,52 +54,20 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-12 lg:gap-16 items-start mt-12 sm:mt-16">
           {/* Left Column: Direct channels & availability */}
           <div className="flex flex-col items-start max-w-lg">
+            <h2 className="sr-only">Direct Contact Channels</h2>
             <p className="text-[#14121F]/85 text-base sm:text-lg leading-relaxed">
               Prefer email? Copy the address below, or find me on the platforms
               where developers usually live.
             </p>
 
-            {/* Email Copy Button (API connects in Step 33 — currently disabled loading state) */}
-            <button
-              type="button"
-              disabled
-              className="w-full max-w-[430px] my-7 py-5 border-y border-[#14121F]/25 flex items-center justify-between opacity-80 cursor-not-allowed text-left select-none transition-opacity"
-              aria-label="Email address loading from settings"
-            >
-              <span className="flex flex-col gap-1">
-                <small className="font-mono text-[9px] font-bold uppercase tracking-wider text-[#5B1B0D]">
-                  EMAIL ME AT
-                </small>
-                <span className="font-mono text-base sm:text-lg font-bold text-ink">
-                  loading...
-                </span>
-              </span>
-
-              <span
-                className="w-10 h-10 rounded-full border border-[#14121F]/30 flex items-center justify-center text-ink/70"
-                aria-hidden="true"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-              </span>
-            </button>
+            {/* Email Copy Button wired to SiteSettings */}
+            <CopyEmailButton email={site.email} />
 
             {/* Real Social Links */}
             <div className="flex items-center gap-3.5 mb-10">
               {/* GitHub */}
               <a
-                href="https://github.com/kohinoorsingh0"
+                href={site.github || "https://github.com/kohinoorsingh0"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub profile"
@@ -107,7 +88,7 @@ export default function ContactPage() {
 
               {/* LinkedIn */}
               <a
-                href="https://www.linkedin.com/in/kohinoor-singh-5137b9413/"
+                href={site.linkedin || "https://www.linkedin.com/in/kohinoor-singh-5137b9413/"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn profile"
@@ -124,7 +105,7 @@ export default function ContactPage() {
 
               {/* WhatsApp */}
               <a
-                href="https://wa.me/919350666578"
+                href={site.whatsapp || "https://wa.me/919350666578"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp chat"
@@ -151,7 +132,7 @@ export default function ContactPage() {
                   Currently available
                 </b>
                 <small className="text-[11px] sm:text-xs text-[#5B1B0D] font-mono mt-0.5">
-                  Internships · Junior roles · Select freelance
+                  {site.availability || "Internships · Junior roles · Select freelance"}
                 </small>
               </span>
             </div>
@@ -159,6 +140,7 @@ export default function ContactPage() {
 
           {/* Right Column: Cream Form */}
           <div className="w-full">
+            <h2 className="sr-only">Send a Message</h2>
             <ContactForm />
           </div>
         </div>

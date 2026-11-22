@@ -20,7 +20,7 @@ export default function SkillCard({
     <article className="bg-[#FFFBF2] dark:bg-[#151C3B] border border-black/10 dark:border-white/10 rounded-[20px] p-6 sm:p-7 flex flex-col justify-between shadow-[0_10px_30px_rgba(20,18,31,0.04)] dark:shadow-none hover:-translate-y-1.5 hover:shadow-[0_16px_36px_rgba(20,18,31,0.08)] dark:hover:shadow-[0_16px_36px_rgba(0,0,0,0.4)] transition-all duration-300">
       <div>
         {/* Header: Number & Category */}
-        <span className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-coral mb-2 block">
+        <span className="font-mono text-xs font-bold uppercase tracking-[0.14em] text-[#C83C1A] dark:text-coral mb-2 block">
           {number} / {category.toUpperCase()}
         </span>
         <h3 className="text-2xl font-black tracking-tight text-ink dark:text-cream mb-6">

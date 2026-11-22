@@ -1,10 +1,12 @@
+import { SkillData } from "@/lib/api";
+
 interface CapabilityGroup {
   number: string;
   category: string;
   skills: { name: string; level: "Strong" | "Working" }[];
 }
 
-const capabilitiesData: CapabilityGroup[] = [
+const defaultCapabilitiesData: CapabilityGroup[] = [
   {
     number: "01",
     category: "Frontend",
@@ -46,7 +48,46 @@ const capabilitiesData: CapabilityGroup[] = [
   },
 ];
 
-export default function Capabilities() {
+interface CapabilitiesProps {
+  skills?: SkillData[];
+}
+
+export default function Capabilities({ skills }: CapabilitiesProps) {
+  const capabilitiesData: CapabilityGroup[] = skills && skills.length > 0
+    ? [
+        {
+          number: "01",
+          category: "Frontend",
+          skills: skills
+            .filter((s) => s.category === "Frontend" && s.visible !== false)
+            .map((s) => ({ name: s.name, level: s.level === "Beginner" ? "Working" : s.level })),
+        },
+        {
+          number: "02",
+          category: "Backend",
+          skills: skills
+            .filter((s) => s.category === "Backend" && s.visible !== false)
+            .map((s) => ({ name: s.name, level: s.level === "Beginner" ? "Working" : s.level })),
+        },
+        {
+          number: "03",
+          category: "Database",
+          skills: skills
+            .filter((s) => s.category === "Database" && s.visible !== false)
+            .map((s) => ({ name: s.name, level: s.level === "Beginner" ? "Working" : s.level })),
+        },
+        {
+          number: "04",
+          category: "Tools & DevOps",
+          skills: skills
+            .filter((s) => s.category === "Tools & DevOps" && s.visible !== false)
+            .map((s) => ({ name: s.name, level: s.level === "Beginner" ? "Working" : s.level })),
+        },
+      ].map((grp, idx) => ({
+        ...grp,
+        skills: grp.skills.length > 0 ? grp.skills : defaultCapabilitiesData[idx].skills,
+      }))
+    : defaultCapabilitiesData;
   return (
     <section className="relative overflow-hidden bg-lavender dark:bg-[#181C38] py-16 sm:py-24 lg:py-32 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

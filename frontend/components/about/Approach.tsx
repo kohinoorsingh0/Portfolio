@@ -1,13 +1,21 @@
 import Image from "next/image";
+import { ProjectData, SiteSettingsData } from "@/lib/api";
 
-const stats = [
+const defaultStats = [
   { value: "37,612", label: "Lines in FixFlow" },
   { value: "183", label: "Files in FixFlow" },
   { value: "43", label: "Tests in FixFlow" },
   { value: "3", label: "Roles in FixFlow" },
 ];
 
-export default function Approach() {
+interface ApproachProps {
+  settings?: Partial<SiteSettingsData>;
+  projects?: ProjectData[];
+}
+
+export default function Approach({ settings }: ApproachProps) {
+  const stats = defaultStats;
+  const photoUrl = settings?.profilePhotoUrl || "/images/profile.jpg";
   return (
     <section className="relative overflow-hidden bg-cream dark:bg-navy py-16 sm:py-24 lg:py-32 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,21 +47,21 @@ export default function Approach() {
 
           {/* Right Column: Tilted Photo Card */}
           <div className="flex justify-center w-full">
-            <div className="relative w-full max-w-[340px] sm:max-w-[380px] bg-lime p-3.5 sm:p-4 pb-12 sm:pb-14 rotate-[2deg] sm:rotate-[2.5deg] hover:rotate-0 transition-transform duration-500 shadow-[14px_16px_0_#111111] dark:shadow-[14px_16px_0_#050814]">
+            <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[380px] bg-lime p-3.5 sm:p-4 pb-12 sm:pb-14 rotate-[1.5deg] sm:rotate-[2.5deg] hover:rotate-0 transition-transform duration-500 shadow-[8px_10px_0_#111111] sm:shadow-[14px_16px_0_#111111] dark:shadow-[8px_10px_0_#050814] sm:dark:shadow-[14px_16px_0_#050814]">
               {/* Image Frame with object-top to guarantee full head is visible */}
               <div className="relative w-full aspect-[4/5] overflow-hidden bg-lavender dark:bg-[#1E2650]">
                 <Image
-                  src="/images/profile.jpg"
-                  alt="Kohinoor Singh — Full-Stack Developer"
+                  src={photoUrl}
+                  alt="Kohinoor Singh"
                   fill
-                  priority
-                  sizes="(max-width: 640px) 340px, 380px"
+                  loading="lazy"
+                  sizes="(max-width: 640px) 320px, 380px"
                   className="object-cover object-top"
                 />
               </div>
 
               {/* Tilted Card Bottom Stamp / Label */}
-              <span className="absolute bottom-3.5 left-4 sm:left-5 font-mono text-[10px] sm:text-[11px] font-bold tracking-[0.14em] text-[#14121F] uppercase select-none">
+              <span className="absolute bottom-3.5 left-3 sm:left-5 font-mono text-[9px] xs:text-[10px] sm:text-[11px] font-bold tracking-[0.14em] text-[#14121F] uppercase select-none">
                 BASED IN INDIA · WORKING EVERYWHERE
               </span>
             </div>

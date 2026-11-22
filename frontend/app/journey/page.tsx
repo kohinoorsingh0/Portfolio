@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { constructMetadata } from "@/lib/seo";
+import { constructMetadata, siteUrl } from "@/lib/seo";
 import Timeline from "@/components/journey/Timeline";
+import { getJourney } from "@/lib/api";
 
 export const metadata: Metadata = constructMetadata({
-  title: "Journey — Kohinoor Singh",
+  title: "Journey",
   description:
     "Learning by doing. Growing by sharing. The coursework, code reviews, and small wins shaping the developer I'm becoming.",
+  canonicalUrl: `${siteUrl}/journey`,
+  image: "/images/og-image.png",
 });
 
 const principles = [
@@ -29,7 +32,9 @@ const principles = [
   },
 ];
 
-export default function JourneyPage() {
+export default async function JourneyPage() {
+  const journey = await getJourney();
+
   return (
     <>
       {/* Page Hero matching Figma: .page-hero */}
@@ -69,7 +74,7 @@ export default function JourneyPage() {
       </section>
 
       {/* Section 01: Experience & Education Timeline */}
-      <Timeline />
+      <Timeline entries={journey} />
 
       {/* Section 02: Working Principles matching Figma: .principles */}
       <section className="w-full bg-[#111111] dark:bg-[#0B0F24] text-[#FAF8F4] py-16 sm:py-24 lg:py-32 transition-colors duration-300">

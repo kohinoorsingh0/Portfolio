@@ -1,4 +1,9 @@
-export default function ResumeCard() {
+interface ResumeCardProps {
+  resumeUrl?: string;
+}
+
+export default function ResumeCard({ resumeUrl = "/resume/kohinoor-singh-resume.pdf" }: ResumeCardProps) {
+  const downloadUrl = resumeUrl || "/resume/kohinoor-singh-resume.pdf";
   return (
     <section className="relative overflow-hidden bg-lavender dark:bg-[#181C38] py-16 sm:py-24 lg:py-32 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,12 +21,14 @@ export default function ResumeCard() {
               recruiter-friendly PDF.
             </p>
 
-            {/* Download Button (target PDF linked to /resume.pdf; file uploaded in Step 31) */}
+            {/* Download Button */}
             <a
-              href="/resume.pdf"
+              href={downloadUrl}
               download="Kohinoor_Singh_Resume.pdf"
-              className="inline-flex items-center gap-3 px-7 sm:px-8 py-4 rounded-full bg-ink text-cream hover:shadow-[0_8px_0_#FF5C38] hover:-translate-y-0.5 active:translate-y-0 font-bold text-sm sm:text-base transition-all duration-200 dark:bg-cream dark:text-ink dark:hover:shadow-[0_8px_0_#FF5C38]"
-              title="Download résumé PDF (Note: PDF asset added in Step 31)"
+              target={downloadUrl.startsWith("http") ? "_blank" : undefined}
+              rel={downloadUrl.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="inline-flex items-center justify-center min-h-[48px] gap-3 px-7 sm:px-8 py-4 rounded-full bg-ink text-cream hover:shadow-[0_8px_0_#FF5C38] hover:-translate-y-0.5 active:translate-y-0 font-bold text-sm sm:text-base transition-all duration-200 dark:bg-cream dark:text-ink dark:hover:shadow-[0_8px_0_#FF5C38]"
+              title="Download résumé PDF"
             >
               <span>Download résumé</span>
               <span className="text-base" aria-hidden="true">
@@ -60,7 +67,7 @@ export default function ResumeCard() {
 
           {/* Right Column: Tilted Paper Document Preview */}
           <div className="flex justify-center w-full">
-            <div className="relative w-full max-w-[380px] sm:max-w-[420px] aspect-[1/1.38] bg-white text-[#14121F] rounded-xl p-7 sm:p-9 shadow-[20px_25px_50px_rgba(30,24,60,0.18)] rotate-[2deg] sm:rotate-[3deg] hover:rotate-0 hover:scale-[1.01] transition-transform duration-500 border border-black/5 select-none flex flex-col justify-between">
+            <div className="relative w-full max-w-[280px] xs:max-w-[320px] sm:max-w-[420px] aspect-[1/1.38] bg-white text-[#14121F] rounded-xl p-5 sm:p-9 shadow-[10px_14px_30px_rgba(30,24,60,0.18)] sm:shadow-[20px_25px_50px_rgba(30,24,60,0.18)] rotate-[1.5deg] sm:rotate-[3deg] hover:rotate-0 hover:scale-[1.01] transition-transform duration-500 border border-black/5 select-none flex flex-col justify-between">
               <div>
                 {/* Header: Name and Title */}
                 <div className="flex items-end justify-between">
@@ -86,9 +93,9 @@ export default function ResumeCard() {
 
                 {/* Section: Experience */}
                 <div className="mb-4">
-                  <h4 className="font-mono text-[10px] font-bold text-coral uppercase tracking-wider mb-1">
+                  <h3 className="font-mono text-[10px] font-bold text-coral uppercase tracking-wider mb-1">
                     EXPERIENCE
-                  </h4>
+                  </h3>
                   <p className="font-bold text-xs sm:text-sm text-[#14121F]">
                     Full-Stack Developer, FixFlow
                   </p>
@@ -100,9 +107,9 @@ export default function ResumeCard() {
 
                 {/* Section: Education */}
                 <div>
-                  <h4 className="font-mono text-[10px] font-bold text-coral uppercase tracking-wider mb-1">
+                  <h3 className="font-mono text-[10px] font-bold text-coral uppercase tracking-wider mb-1">
                     EDUCATION
-                  </h4>
+                  </h3>
                   <p className="font-bold text-xs sm:text-sm text-[#14121F]">
                     Bachelor of Computer Applications
                   </p>

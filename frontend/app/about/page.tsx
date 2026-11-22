@@ -1,18 +1,35 @@
 import type { Metadata } from "next";
+import { constructMetadata, siteUrl, aboutFaqJsonLd } from "@/lib/seo";
 import Approach from "@/components/about/Approach";
 import Capabilities from "@/components/about/Capabilities";
 import WhatIDo from "@/components/about/WhatIDo";
 import ResumeCard from "@/components/about/ResumeCard";
+import { getSiteSettings, getSkills } from "@/lib/api";
 
-export const metadata: Metadata = {
-  title: "About — Kohinoor Singh",
+export const metadata: Metadata = constructMetadata({
+  title: "About",
   description:
     "The person behind the pixels: a product-minded developer who believes the best digital work feels both beautiful and dependable.",
-};
+  canonicalUrl: `${siteUrl}/about`,
+  image: "/images/og-image.png",
+});
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [site, skills] = await Promise.all([
+    getSiteSettings(),
+    getSkills(),
+  ]);
+
   return (
     <>
+      {/* FAQ Schema for About Page (Rich Results & AEO) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(aboutFaqJsonLd),
+        }}
+      />
+
       {/* Page Hero matching Figma .page-hero */}
       <section className="relative overflow-hidden bg-cream dark:bg-navy pt-8 sm:pt-14 pb-16 sm:pb-20 border-b border-black/5 dark:border-white/5 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -27,23 +44,23 @@ export default function AboutPage() {
             </span>
           </h1>
           <p className="text-muted dark:text-[#A8A8B8] text-base sm:text-xl max-w-2xl leading-relaxed">
-            The person behind the pixels: a product-minded developer who believes
-            the best digital work feels both beautiful and dependable.
+            {site.bio ||
+              "The person behind the pixels: a product-minded developer who believes the best digital work feels both beautiful and dependable."}
           </p>
         </div>
       </section>
 
       {/* Section 01: My Approach & Verified FixFlow Stats */}
-      <Approach />
+      <Approach settings={site} />
 
       {/* Section 02: Capabilities */}
-      <Capabilities />
+      <Capabilities skills={skills} />
 
       {/* Section 03: What I Do */}
       <WhatIDo />
 
       {/* Section 04: The One-Pager Resume */}
-      <ResumeCard />
+      <ResumeCard resumeUrl={site.resumeUrl} />
     </>
   );
 }
