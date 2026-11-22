@@ -4,6 +4,7 @@ import cors from "cors";
 import publicRoutes from "./routes/public";
 import contactRoutes from "./routes/contact";
 import adminAuthRoutes from "./routes/adminAuth";
+import adminSettingsRoutes from "./routes/adminSettings";
 
 const app = express();
 
@@ -27,6 +28,9 @@ app.use("/api", contactRoutes);
 
 // Admin Auth APIs
 app.use("/api/admin", adminAuthRoutes);
+
+// Admin Settings APIs
+app.use("/api/admin", adminSettingsRoutes);
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
