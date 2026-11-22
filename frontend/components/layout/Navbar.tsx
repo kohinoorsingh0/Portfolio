@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ThemeToggle from "./ThemeToggle";
 
 const NAV_LINKS = [
@@ -15,6 +15,22 @@ const NAV_LINKS = [
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Close mobile menu on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   // Hide public floating navbar on all admin pages
   if (pathname?.startsWith("/admin")) {
@@ -37,7 +53,7 @@ export default function Navbar() {
           <Link
             href="/"
             className="flex items-center text-xl font-black tracking-tight text-ink dark:text-cream hover:opacity-80 transition-opacity focus-visible:outline-2 focus-visible:outline-royal rounded-md"
-            aria-label="Home"
+            aria-label="KS. — Home"
           >
             KS.
           </Link>
@@ -80,14 +96,15 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Right Controls: Toggle + Hamburger */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex md:hidden items-center gap-1.5">
             <ThemeToggle />
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-full text-ink dark:text-cream hover:bg-black/5 dark:hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-royal cursor-pointer"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-ink dark:text-cream hover:bg-black/5 dark:hover:bg-white/10 transition-colors focus-visible:outline-2 focus-visible:outline-royal cursor-pointer"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-menu"
             >
               {mobileMenuOpen ? (
                 <svg
@@ -125,6 +142,9 @@ export default function Navbar() {
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
           <div
+            id="mobile-navigation-menu"
+            role="navigation"
+            aria-label="Mobile Navigation Drawer"
             className="md:hidden mt-2 p-4 rounded-3xl bg-cream/95 dark:bg-navy/95 backdrop-blur-md border border-black/10 dark:border-white/10 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200"
           >
             <div className="flex flex-col gap-2">

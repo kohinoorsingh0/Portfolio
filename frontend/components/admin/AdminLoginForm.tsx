@@ -117,7 +117,7 @@ export default function AdminLoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full mt-2 py-3.5 px-6 rounded-full bg-ink text-cream dark:bg-cream dark:text-ink font-bold text-sm sm:text-base hover:bg-ink/90 dark:hover:bg-white hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+        className="w-full mt-2 py-3.5 px-6 min-h-[48px] rounded-full bg-ink text-cream dark:bg-cream dark:text-ink font-bold text-sm sm:text-base hover:bg-ink/90 dark:hover:bg-white hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer focus-visible:outline-2 focus-visible:outline-royal focus-visible:outline-offset-2"
       >
         {loading ? (
           <>

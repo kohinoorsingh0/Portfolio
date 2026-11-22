@@ -28,17 +28,18 @@ export default function AdminDashboardPage() {
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
       try {
-        const [projRes, skillRes, journeyRes] = await Promise.all([
+        const [projRes, skillRes, journeyRes, msgRes] = await Promise.all([
           fetch(`${apiUrl.replace(/\/$/, "")}/projects`).catch(() => null),
           fetch(`${apiUrl.replace(/\/$/, "")}/skills`).catch(() => null),
           fetch(`${apiUrl.replace(/\/$/, "")}/journey`).catch(() => null),
+          fetch(`${apiUrl.replace(/\/$/, "")}/admin/messages`, { credentials: "include" }).catch(() => null),
         ]);
 
         const newCounts: DashboardCounts = {
           projects: "—",
           skills: "—",
           journey: "—",
-          messages: "—", // Messages admin API is built in Step 32; keep as "—"
+          messages: "—",
         };
 
         if (projRes && projRes.ok) {
@@ -59,6 +60,15 @@ export default function AdminDashboardPage() {
           const data = await journeyRes.json().catch(() => null);
           if (Array.isArray(data)) {
             newCounts.journey = data.length;
+          }
+        }
+
+        if (msgRes && msgRes.ok) {
+          const data = await msgRes.json().catch(() => null);
+          if (typeof data?.unreadCount === "number") {
+            newCounts.messages = data.unreadCount;
+          } else if (Array.isArray(data?.messages)) {
+            newCounts.messages = data.messages.length;
           }
         }
 

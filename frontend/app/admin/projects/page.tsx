@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import AdminShell from "@/components/admin/AdminShell";
+import { triggerRevalidation } from "@/lib/api";
 
 export interface ProjectItem {
   _id: string;
@@ -140,6 +141,7 @@ export default function AdminProjectsPage() {
       const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.ok) {
+        triggerRevalidation();
         setProjects((prev) => prev.filter((p) => p._id !== deletingProject._id));
         setSuccess(`Project "${deletingProject.title}" was permanently deleted.`);
         setDeletingProject(null);
@@ -467,14 +469,14 @@ export default function AdminProjectsPage() {
                 <div className="flex items-center gap-2 pt-2 border-t border-black/5 dark:border-white/5">
                   <Link
                     href={`/admin/projects/${project._id}`}
-                    className="flex-1 py-2 rounded-xl text-xs font-semibold text-center text-royal dark:text-[#7888FF] bg-royal/5 dark:bg-royal/15"
+                    className="flex-1 min-h-[44px] flex items-center justify-center py-2 rounded-xl text-xs font-semibold text-center text-royal dark:text-[#7888FF] bg-royal/5 dark:bg-royal/15"
                   >
                     Edit
                   </Link>
                   <button
                     type="button"
                     onClick={() => setDeletingProject(project)}
-                    className="flex-1 py-2 rounded-xl text-xs font-semibold text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30"
+                    className="flex-1 min-h-[44px] flex items-center justify-center py-2 rounded-xl text-xs font-semibold text-center text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 cursor-pointer"
                   >
                     Delete
                   </button>

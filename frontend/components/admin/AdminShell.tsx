@@ -290,7 +290,7 @@ export default function AdminShell({ children }: AdminShellProps) {
               type="button"
               onClick={() => setMobileMenuOpen((prev) => !prev)}
               aria-label="Toggle navigation menu"
-              className="lg:hidden p-2 rounded-xl border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="lg:hidden min-w-[44px] min-h-[44px] flex items-center justify-center p-2 rounded-xl border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
             >
               <svg
                 className="w-5 h-5"
@@ -349,7 +349,7 @@ export default function AdminShell({ children }: AdminShellProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                  className={`flex items-center min-h-[44px] gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
                     active
                       ? "bg-royal text-white"
                       : "text-ink/80 dark:text-cream/80 hover:bg-black/5 dark:hover:bg-white/5"
