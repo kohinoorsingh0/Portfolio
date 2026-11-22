@@ -7,6 +7,10 @@ import adminAuthRoutes from "./routes/adminAuth";
 import adminSettingsRoutes from "./routes/adminSettings";
 import adminSkillsRoutes from "./routes/adminSkills";
 import adminProjectsRoutes from "./routes/adminProjects";
+import adminUploadRoutes from "./routes/adminUpload";
+import adminJourneyRoutes from "./routes/adminJourney";
+import adminMessagesRoutes from "./routes/adminMessages";
+import { adminRateLimiter } from "./middleware/rateLimit";
 
 const app = express();
 
@@ -28,6 +32,9 @@ app.use("/api", publicRoutes);
 // Contact & Resume APIs
 app.use("/api", contactRoutes);
 
+// Rate limiter for all Admin APIs
+app.use("/api/admin", adminRateLimiter);
+
 // Admin Auth APIs
 app.use("/api/admin", adminAuthRoutes);
 
@@ -39,6 +46,15 @@ app.use("/api/admin", adminSkillsRoutes);
 
 // Admin Projects APIs
 app.use("/api/admin", adminProjectsRoutes);
+
+// Admin Upload APIs
+app.use("/api/admin", adminUploadRoutes);
+
+// Admin Journey APIs
+app.use("/api/admin", adminJourneyRoutes);
+
+// Admin Messages APIs
+app.use("/api/admin", adminMessagesRoutes);
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
