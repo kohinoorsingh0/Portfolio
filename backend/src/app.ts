@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import helmet from "helmet";
 import cors from "cors";
+import publicRoutes from "./routes/public";
 
 const app = express();
 
@@ -15,6 +16,9 @@ app.use(
 );
 
 app.use(express.json());
+
+// Public read APIs
+app.use("/api", publicRoutes);
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
