@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type ChangeEvent } from "react";
+import { API_BASE_URL } from "@/lib/api";
 
 interface FormState {
   name: string;
@@ -20,9 +21,11 @@ export default function ContactForm() {
     email: "",
     message: "",
   });
+  const [honeypot, setHoneypot] = useState("");
 
   const [errors, setErrors] = useState<FormErrors>({});
-  const [status, setStatus] = useState<"idle" | "error" | "valid">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [serverMessage, setServerMessage] = useState<string | null>(null);
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
@@ -46,16 +49,64 @@ export default function ContactForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const isValid = validate();
 
     if (!isValid) {
       setStatus("error");
+      setServerMessage("Please complete each field with a valid email.");
       return;
     }
 
-    setStatus("valid");
+    setStatus("submitting");
+    setServerMessage(null);
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          message: formData.message.trim(),
+          _gotcha: honeypot,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.status === 200 || res.status === 201 || data.ok || data.success) {
+        setStatus("success");
+        setServerMessage("Thanks — I'll reply within 24 hours.");
+        setFormData({ name: "", email: "", message: "" });
+        setHoneypot("");
+        setErrors({});
+      } else if (res.status === 429) {
+        setStatus("error");
+        setServerMessage(
+          data.error ||
+            "Too many contact submissions. Please try again after 1 hour."
+        );
+      } else if (res.status === 400) {
+        setStatus("error");
+        setServerMessage(
+          data.message ||
+            data.error ||
+            "Validation failed. Please verify your name, email, and message."
+        );
+      } else {
+        setStatus("error");
+        setServerMessage(
+          data.error || data.message || "Unable to send message. Please try again."
+        );
+      }
+    } catch {
+      setStatus("error");
+      setServerMessage(
+        "Network error connecting to backend. Please check your connection or reach out via email."
+      );
+    }
   };
 
   const handleChange = (
@@ -70,6 +121,7 @@ export default function ContactForm() {
     }
     if (status === "error") {
       setStatus("idle");
+      setServerMessage(null);
     }
   };
 
@@ -105,7 +157,7 @@ export default function ContactForm() {
             value={formData.name}
             onChange={handleChange}
             placeholder="e.g. Jane Doe"
-            className={`w-full bg-transparent border-0 border-b-2 py-3 px-1 text-base text-ink dark:text-cream placeholder:text-ink/30 dark:placeholder:text-cream/30 focus:outline-none transition-colors ${
+            className={`w-full bg-transparent border-0 border-b-2 py-3 px-1 text-base text-ink dark:text-cream placeholder:text-ink/30 dark:placeholder:text-cream/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-royal dark:focus-visible:ring-lime rounded-sm transition-colors ${
               errors.name
                 ? "border-red-600 focus:border-red-600"
                 : "border-[#14121F]/40 dark:border-white/30 focus:border-[#111111] dark:focus:border-white"
@@ -133,7 +185,7 @@ export default function ContactForm() {
             value={formData.email}
             onChange={handleChange}
             placeholder="e.g. jane@example.com"
-            className={`w-full bg-transparent border-0 border-b-2 py-3 px-1 text-base text-ink dark:text-cream placeholder:text-ink/30 dark:placeholder:text-cream/30 focus:outline-none transition-colors ${
+            className={`w-full bg-transparent border-0 border-b-2 py-3 px-1 text-base text-ink dark:text-cream placeholder:text-ink/30 dark:placeholder:text-cream/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-royal dark:focus-visible:ring-lime rounded-sm transition-colors ${
               errors.email
                 ? "border-red-600 focus:border-red-600"
                 : "border-[#14121F]/40 dark:border-white/30 focus:border-[#111111] dark:focus:border-white"
@@ -161,7 +213,7 @@ export default function ContactForm() {
             value={formData.message}
             onChange={handleChange}
             placeholder="What are you building, what's the timeline, and how can I help?"
-            className={`w-full bg-transparent border-0 border-b-2 py-3 px-1 text-base text-ink dark:text-cream placeholder:text-ink/30 dark:placeholder:text-cream/30 focus:outline-none resize-none transition-colors ${
+            className={`w-full bg-transparent border-0 border-b-2 py-3 px-1 text-base text-ink dark:text-cream placeholder:text-ink/30 dark:placeholder:text-cream/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-royal dark:focus-visible:ring-lime rounded-sm resize-none transition-colors ${
               errors.message
                 ? "border-red-600 focus:border-red-600"
                 : "border-[#14121F]/40 dark:border-white/30 focus:border-[#111111] dark:focus:border-white"
@@ -173,21 +225,35 @@ export default function ContactForm() {
             </p>
           )}
         </div>
+
+        {/* Hidden Honeypot Field */}
+        <div className="hidden" aria-hidden="true" style={{ display: "none" }}>
+          <label htmlFor="_gotcha">Leave this field blank</label>
+          <input
+            id="_gotcha"
+            name="_gotcha"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
+        </div>
       </div>
 
       {/* Status Messages */}
-      {status === "error" && (
+      {status === "error" && serverMessage && (
         <div className="mt-4 p-3 rounded-lg bg-red-100 dark:bg-red-950/60 border border-red-300 dark:border-red-800">
           <p className="font-mono text-xs font-semibold text-red-700 dark:text-red-400">
-            Please complete each field with a valid email.
+            {serverMessage}
           </p>
         </div>
       )}
 
-      {status === "valid" && (
+      {status === "success" && serverMessage && (
         <div className="mt-4 p-3 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800">
           <p className="font-mono text-xs font-semibold text-emerald-800 dark:text-emerald-300">
-            ✓ Form validated! (Submission API will be connected in Step 33).
+            ✓ {serverMessage}
           </p>
         </div>
       )}
@@ -196,9 +262,10 @@ export default function ContactForm() {
       <div className="mt-8">
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 sm:py-4 rounded-full bg-[#111111] text-white hover:bg-black active:scale-[0.99] font-bold text-sm sm:text-base hover:-translate-y-0.5 transition-all duration-200 shadow-md cursor-pointer select-none"
+          disabled={status === "submitting"}
+          className="w-full sm:w-auto inline-flex items-center justify-center min-h-[48px] gap-2.5 px-8 py-3.5 sm:py-4 rounded-full bg-[#111111] text-white hover:bg-black active:scale-[0.99] font-bold text-sm sm:text-base hover:-translate-y-0.5 transition-all duration-200 shadow-md cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-royal focus-visible:outline-offset-2"
         >
-          <span>Send message</span>
+          <span>{status === "submitting" ? "Sending..." : "Send message"}</span>
           <span className="text-base" aria-hidden="true">
             →
           </span>
