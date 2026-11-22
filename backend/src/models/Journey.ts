@@ -9,7 +9,7 @@ export const journeyTypes = [
 
 export const journeyZodSchema = z.object({
   type: z.enum(journeyTypes),
-  yearLabel: z.string().min(1, "Year label is required"),
+  yearLabel: z.string().default(""),
   title: z.string().min(1, "Title is required"),
   organisation: z.string().min(1, "Organisation is required"),
   description: z.string().default(""),
@@ -34,7 +34,7 @@ const journeySchema = new Schema<IJourneyDocument>(
     },
     yearLabel: {
       type: String,
-      required: true,
+      default: "",
       trim: true,
     },
     title: {
