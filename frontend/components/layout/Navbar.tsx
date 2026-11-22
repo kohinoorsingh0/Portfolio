@@ -16,6 +16,11 @@ export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Hide public floating navbar on all admin pages
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);

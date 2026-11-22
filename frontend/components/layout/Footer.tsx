@@ -1,7 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import Marquee from "./Marquee";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Hide public footer on all admin pages
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
   return (
     <footer className="w-full mt-auto bg-[#14121f] text-[#FAF8F4] overflow-hidden border-0 m-0">
       {/* Repeating Huge Display Marquee */}
