@@ -5,6 +5,7 @@ import publicRoutes from "./routes/public";
 import contactRoutes from "./routes/contact";
 import adminAuthRoutes from "./routes/adminAuth";
 import adminSettingsRoutes from "./routes/adminSettings";
+import adminSkillsRoutes from "./routes/adminSkills";
 
 const app = express();
 
@@ -31,6 +32,9 @@ app.use("/api/admin", adminAuthRoutes);
 
 // Admin Settings APIs
 app.use("/api/admin", adminSettingsRoutes);
+
+// Admin Skills APIs
+app.use("/api/admin", adminSkillsRoutes);
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
