@@ -43,10 +43,13 @@ export const verifyToken = (token: string): AdminTokenPayload => {
 /**
  * Standard httpOnly cookie configuration for admin authentication
  */
-export const getAdminCookieOptions = () => ({
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax" as const,
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
-  path: "/",
-});
+export const getAdminCookieOptions = () => {
+  const isProd = process.env.NODE_ENV === "production";
+  return {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? ("none" as const) : ("lax" as const),
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+    path: "/",
+  };
+};

@@ -25,6 +25,7 @@ build/
 .env*.local
 *.env.local
 frontend/.env.local
+backend/.env.local
 backend/.env
 !.env.example
 !frontend/.env.example

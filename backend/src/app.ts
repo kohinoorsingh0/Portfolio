@@ -3,6 +3,7 @@ import helmet from "helmet";
 import cors from "cors";
 import publicRoutes from "./routes/public";
 import contactRoutes from "./routes/contact";
+import adminAuthRoutes from "./routes/adminAuth";
 
 const app = express();
 
@@ -23,6 +24,9 @@ app.use("/api", publicRoutes);
 
 // Contact & Resume APIs
 app.use("/api", contactRoutes);
+
+// Admin Auth APIs
+app.use("/api/admin", adminAuthRoutes);
 
 // Health check endpoint
 app.get("/health", (_req: Request, res: Response) => {
