@@ -28,10 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
-        {/* Anti-FOUC Theme Script */}
+        {/* Anti-FOUC Theme Script: Auto Day/Night with local time + manual override */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{if(localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}catch(e){}`,
+            __html: `(function(){try{var stored=localStorage.getItem('theme');var isDark=false;if(stored==='dark'){isDark=true;}else if(stored==='light'){isDark=false;}else{var h=new Date().getHours();if(!isNaN(h)){isDark=(h<6||h>=18);}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){isDark=true;}}if(isDark){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
           }}
         />
         {/* JSON-LD Person Schema */}

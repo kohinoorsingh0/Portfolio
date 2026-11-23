@@ -33,7 +33,10 @@ export default function AdminLoginForm() {
       const data = await res.json().catch(() => ({}));
 
       if (res.status === 200 && data.ok) {
-        // Successful login: redirect to admin dashboard
+        // Successful login: set local cookie marker for Next.js middleware and redirect
+        document.cookie = `admin_token=1; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax${
+          window.location.protocol === "https:" ? "; Secure" : ""
+        }`;
         window.location.href = "/admin";
         return;
       }

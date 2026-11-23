@@ -183,6 +183,7 @@ export default function AdminShell({ children }: AdminShellProps) {
   }, []);
 
   const handleLogout = async () => {
+    document.cookie = "admin_token=; path=/; max-age=0;";
     try {
       const apiUrl =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";

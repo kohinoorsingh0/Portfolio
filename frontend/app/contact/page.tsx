@@ -16,7 +16,7 @@ export default async function ContactPage() {
   const site = await getSiteSettings();
 
   return (
-    <section className="relative overflow-hidden bg-[#FF5C38] text-ink min-h-[calc(100vh-6rem)] pt-8 sm:pt-14 pb-20 sm:pb-32 transition-colors duration-300">
+    <section className="relative overflow-hidden bg-[#FF5C38] min-h-[calc(100vh-6rem)] pt-8 sm:pt-14 pb-20 sm:pb-32 transition-colors duration-300">
       {/* FAQ Schema for Contact Page (Rich Results & AEO) */}
       <script
         type="application/ld+json"
@@ -27,24 +27,26 @@ export default async function ContactPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Contact Top Hero matching Figma */}
         <div className="max-w-4xl">
-          <div className="flex items-center gap-3.5 mb-6 sm:mb-8">
-            <span className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white text-[#FF5C38] font-mono text-xs sm:text-sm font-bold flex items-center justify-center select-none shadow-xs">
+          {/* Eyebrow in dark navy pill with lime 04 badge */}
+          <div className="inline-flex items-center gap-2.5 bg-[#0F1530] pl-1.5 pr-4 py-1.5 rounded-full mb-6 sm:mb-8 shadow-xs select-none">
+            <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#C8F542] text-[#0F1530] font-mono text-xs sm:text-[13px] font-bold flex items-center justify-center shrink-0">
               04
             </span>
-            <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.16em] text-[#5B1B0D] select-none">
+            <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.16em] text-white">
               / LET&apos;S TALK
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[84px] xl:text-[96px] font-black tracking-[-0.05em] leading-[0.94] text-[#111111] mb-6 sm:mb-8">
-            Have a good idea?
-            <br />
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[84px] xl:text-[96px] font-black tracking-[-0.05em] leading-[0.94] mb-6 sm:mb-8">
+            <span className="text-[#0F1530] block">
+              Have a good idea?
+            </span>
             <span className="text-white relative inline-block">
               I&apos;d love to hear it.
             </span>
           </h1>
 
-          <p className="text-[#14121F]/80 text-base sm:text-xl max-w-2xl leading-relaxed">
+          <p className="text-[#FFF8EC]/95 text-base sm:text-xl max-w-2xl leading-relaxed">
             Tell me about the role, the project, or the problem you are trying
             to solve. Thoughtful messages always get a thoughtful reply.
           </p>
@@ -55,23 +57,23 @@ export default async function ContactPage() {
           {/* Left Column: Direct channels & availability */}
           <div className="flex flex-col items-start max-w-lg">
             <h2 className="sr-only">Direct Contact Channels</h2>
-            <p className="text-[#14121F]/85 text-base sm:text-lg leading-relaxed">
+            <p className="text-[#FFF8EC]/95 text-base sm:text-lg leading-relaxed">
               Prefer email? Copy the address below, or find me on the platforms
               where developers usually live.
             </p>
 
-            {/* Email Copy Button wired to SiteSettings */}
+            {/* Email Copy Button wired to SiteSettings - Dark navy card with lime label */}
             <CopyEmailButton email={site.email} />
 
-            {/* Real Social Links */}
-            <div className="flex items-center gap-3.5 mb-10">
+            {/* Real Social Links - Navy circles with white icons, hover = lime circle with navy icon */}
+            <div className="flex items-center gap-3.5 mb-8">
               {/* GitHub */}
               <a
                 href={site.github || "https://github.com/kohinoorsingh0"}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="GitHub profile"
-                className="w-11 h-11 rounded-full border border-[#14121F] bg-transparent flex items-center justify-center text-ink hover:bg-lime hover:border-lime hover:text-ink hover:-translate-y-1 transition-all duration-200 cursor-pointer shadow-xs"
+                className="w-11 h-11 rounded-full bg-[#0F1530] text-white hover:bg-[#C8F542] hover:text-[#0F1530] hover:-translate-y-1 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs border border-white/10"
               >
                 <svg
                   className="w-5 h-5 fill-current"
@@ -92,7 +94,7 @@ export default async function ContactPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn profile"
-                className="w-11 h-11 rounded-full border border-[#14121F] bg-transparent flex items-center justify-center text-ink hover:bg-lime hover:border-lime hover:text-ink hover:-translate-y-1 transition-all duration-200 cursor-pointer shadow-xs"
+                className="w-11 h-11 rounded-full bg-[#0F1530] text-white hover:bg-[#C8F542] hover:text-[#0F1530] hover:-translate-y-1 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs border border-white/10"
               >
                 <svg
                   className="w-4 h-4 fill-current"
@@ -109,7 +111,7 @@ export default async function ContactPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp chat"
-                className="w-11 h-11 rounded-full border border-[#14121F] bg-transparent flex items-center justify-center text-ink hover:bg-lime hover:border-lime hover:text-ink hover:-translate-y-1 transition-all duration-200 cursor-pointer shadow-xs"
+                className="w-11 h-11 rounded-full bg-[#0F1530] text-white hover:bg-[#C8F542] hover:text-[#0F1530] hover:-translate-y-1 flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs border border-white/10"
               >
                 <svg
                   className="w-5 h-5 fill-current"
@@ -121,18 +123,19 @@ export default async function ContactPage() {
               </a>
             </div>
 
-            {/* Availability Indicator */}
-            <div className="flex items-center gap-3.5 pt-2">
-              <i
-                className="w-2.5 h-2.5 rounded-full bg-[#278D4F] ring-4 ring-[#278D4F]/30 shrink-0 not-italic"
+            {/* Availability Indicator - White text with lime dot on dark navy pill */}
+            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#0F1530]/85 border border-white/10 backdrop-blur-xs shadow-xs select-none">
+              <span
+                className="w-2.5 h-2.5 rounded-full bg-[#C8F542] ring-4 ring-[#C8F542]/30 shrink-0"
                 aria-hidden="true"
               />
-              <span className="flex flex-col">
-                <b className="font-bold text-xs sm:text-sm text-ink">
+              <span className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+                <b className="font-bold text-xs sm:text-sm text-white">
                   Currently available
                 </b>
-                <small className="text-[11px] sm:text-xs text-[#5B1B0D] font-mono mt-0.5">
-                  {site.availability || "Internships · Junior roles · Select freelance"}
+                <span className="hidden sm:inline text-white/40 text-xs">/</span>
+                <small className="text-[11px] sm:text-xs text-white/80 font-mono">
+                  {site.availability || "Internships & Junior roles"}
                 </small>
               </span>
             </div>

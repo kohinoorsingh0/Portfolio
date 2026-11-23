@@ -48,7 +48,7 @@ export const getAdminCookieOptions = () => {
   return {
     httpOnly: true,
     secure: isProd,
-    sameSite: "lax" as const,
+    sameSite: isProd ? ("none" as const) : ("lax" as const),
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     path: "/",
   };
