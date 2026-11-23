@@ -14,12 +14,20 @@ import { adminRateLimiter } from "./middleware/rateLimit";
 
 const app = express();
 
-const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+const rawFrontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+const frontendUrl = rawFrontendUrl.replace(/\/$/, "");
 
 app.use(helmet());
 app.use(
   cors({
-    origin: frontendUrl,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/$/, "");
+      if (cleanOrigin === frontendUrl) {
+        return callback(null, true);
+      }
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
+    },
     credentials: true,
   })
 );
