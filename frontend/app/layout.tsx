@@ -20,6 +20,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   ...constructMetadata(),
+  description:
+    "Kohinoor Singh is a Full-Stack Developer from Karnal, India. BCA student building MERN apps with React, TypeScript, Next.js, Node.js & MongoDB.",
   verification: {
     google: "lszdmCYvDGLN20lsi6f11pqN0Dfm0rkOOgoNDbMAtcI",
   },
