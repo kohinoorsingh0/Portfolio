@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { constructMetadata, personJsonLd, websiteJsonLd } from "@/lib/seo";
+import { constructMetadata, websiteJsonLd } from "@/lib/seo";
 import Navbar from "@/components/layout/Navbar";
 import CtaBanner from "@/components/layout/CtaBanner";
 import Footer from "@/components/layout/Footer";
@@ -22,6 +22,39 @@ export const metadata: Metadata = {
   ...constructMetadata(),
   verification: {
     google: "lszdmCYvDGLN20lsi6f11pqN0Dfm0rkOOgoNDbMAtcI",
+  },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Kohinoor Singh",
+  jobTitle: "Frontend Developer",
+  url: "https://kohinoorsingh.netlify.app/",
+  sameAs: [
+    "https://www.linkedin.com/in/kohinoor-singh-5137b9413/",
+    "https://github.com/kohinoorsingh0",
+    "https://www.instagram.com/digital_kohinoor/",
+  ],
+  knowsAbout: [
+    "React",
+    "Next.js",
+    "TypeScript",
+    "JavaScript",
+    "Node.js",
+    "Express.js",
+    "MongoDB",
+    "Tailwind CSS",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Karnal",
+    addressRegion: "Haryana",
+    addressCountry: "IN",
+  },
+  alumniOf: {
+    "@type": "CollegeOrUniversity",
+    name: "Pt. Chiranji Lal Sharma Govt. P.G. College, Karnal",
   },
 };
 
