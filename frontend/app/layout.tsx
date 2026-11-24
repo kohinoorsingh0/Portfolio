@@ -18,7 +18,12 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = constructMetadata();
+export const metadata: Metadata = {
+  ...constructMetadata(),
+  verification: {
+    google: "lszdmCYvDGLN20lsi6f11pqN0Dfm0rkOOgoNDbMAtcI",
+  },
+};
 
 export default function RootLayout({
   children,
