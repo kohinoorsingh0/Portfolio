@@ -1,6 +1,6 @@
 # Kohinoor Singh — Frontend Developer (MERN Stack) based in Karnal, Haryana, India
 
-> https://kohinoorsingh.netlify.app/
+> [Kohinoor Singh — Portfolio](https://kohinoorsingh.netlify.app/)
 
 ## Bio
 BCA Web Development student at Pt. Chiranji Lal Sharma Govt. P.G. College, Karnal.
@@ -8,13 +8,13 @@ Full-stack and frontend developer building FixFlow (a campus complaint workflow 
 Specializing in React, Next.js, TypeScript, JavaScript, Node.js, Express.js, MongoDB, and Tailwind CSS.
 
 ## Site Pages
-- Home: https://kohinoorsingh.netlify.app/
-- About: https://kohinoorsingh.netlify.app/about
-- Projects: https://kohinoorsingh.netlify.app/projects
-- Journey: https://kohinoorsingh.netlify.app/journey
-- Contact: https://kohinoorsingh.netlify.app/contact
+- [Home](https://kohinoorsingh.netlify.app/)
+- [About](https://kohinoorsingh.netlify.app/about)
+- [Projects](https://kohinoorsingh.netlify.app/projects)
+- [Journey](https://kohinoorsingh.netlify.app/journey)
+- [Contact](https://kohinoorsingh.netlify.app/contact)
 
 ## Profiles & Socials
-- LinkedIn: https://www.linkedin.com/in/kohinoor-singh-5137b9413/
-- GitHub: https://github.com/kohinoorsingh0
-- Instagram: https://www.instagram.com/digital_kohinoor/
+- [LinkedIn](https://www.linkedin.com/in/kohinoor-singh-5137b9413/)
+- [GitHub](https://github.com/kohinoorsingh0)
+- [Instagram](https://www.instagram.com/digital_kohinoor/)
