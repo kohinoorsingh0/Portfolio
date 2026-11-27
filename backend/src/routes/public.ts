@@ -196,13 +196,11 @@ router.get("/projects", async (_req: Request, res: Response) => {
       .sort({ order: 1 })
       .select("-__v")
       .lean();
-    if (projects && projects.length > 0) {
-      return res.status(200).json(projects);
-    }
+    return res.status(200).json(projects || []);
   } catch (err) {
-    // Return verified fallback
+    // Return verified fallback only if DB is unreachable
+    return res.status(200).json(FALLBACK_PROJECTS);
   }
-  return res.status(200).json(FALLBACK_PROJECTS);
 });
 
 // 4. GET /api/projects/:slug
@@ -222,16 +220,16 @@ router.get("/projects/:slug", async (req: Request, res: Response) => {
     if (project) {
       return res.status(200).json(project);
     }
+    // Database is connected: project was deleted or does not exist
+    return res.status(404).json({ message: "Project not found" });
   } catch (err) {
-    // Fall through to fallback check
+    // Only if DB connection failed/timed out, fallback for local offline dev
+    const fallback = FALLBACK_PROJECTS.find((p) => p.slug === slug);
+    if (fallback) {
+      return res.status(200).json(fallback);
+    }
+    return res.status(404).json({ message: "Project not found" });
   }
-
-  const fallback = FALLBACK_PROJECTS.find((p) => p.slug === slug);
-  if (fallback) {
-    return res.status(200).json(fallback);
-  }
-
-  return res.status(404).json({ message: "Project not found" });
 });
 
 // 5. GET /api/journey

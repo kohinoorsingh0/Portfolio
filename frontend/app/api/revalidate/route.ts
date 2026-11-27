@@ -17,10 +17,15 @@ export async function POST(req: NextRequest) {
       revalidatePath("/");
       revalidatePath("/about");
       revalidatePath("/projects");
+      revalidatePath("/projects/[slug]", "page");
       revalidatePath("/journey");
       revalidatePath("/contact");
     } else {
       revalidatePath(targetPath);
+      if (targetPath.startsWith("/projects")) {
+        revalidatePath("/projects", "page");
+        revalidatePath("/projects/[slug]", "page");
+      }
     }
 
     return NextResponse.json({

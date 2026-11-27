@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { constructMetadata, siteUrl } from "@/lib/seo";
 import CaseStudy, { CASE_STUDIES, CaseStudyData } from "@/components/projects/CaseStudy";
-import { getProjectBySlug } from "@/lib/api";
+import { getProjectBySlug, getProjects } from "@/lib/api";
 
-export async function generateStaticParams() {
-  return [{ slug: "fixflow" }, { slug: "kohinoor-tunes" }];
-}
+export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -14,7 +13,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = (await getProjectBySlug(slug)) || CASE_STUDIES[slug];
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     return {
@@ -22,8 +21,8 @@ export async function generateMetadata({
     };
   }
 
-  const desc = "shortDescription" in project ? project.shortDescription : project.desc;
-  const image = "imageUrl" in project && project.imageUrl ? project.imageUrl : "/images/og-image.png";
+  const desc = project.shortDescription || project.longDescription || "";
+  const image = project.imageUrl || "/images/og-image.png";
 
   return constructMetadata({
     title: `${project.title} — Case Study`,
@@ -40,43 +39,51 @@ export default async function ProjectDetailPage({
 }) {
   const { slug } = await params;
   const dbProject = await getProjectBySlug(slug);
-  const fallback = CASE_STUDIES[slug];
 
-  if (!dbProject && !fallback) {
+  if (!dbProject) {
     notFound();
   }
 
-  const dbStack = Array.isArray(dbProject?.stack) ? dbProject.stack : [];
-  const project: CaseStudyData = dbProject
-    ? {
-        slug: dbProject.slug,
-        title: dbProject.title,
-        type: dbStack.some(
-          (s) =>
-            typeof s === "string" &&
-            (s.toLowerCase().includes("express") ||
-              s.toLowerCase().includes("node") ||
-              s.toLowerCase().includes("mongo"))
-        )
-          ? "Full-Stack"
-          : "Frontend",
-        palette: fallback?.palette || "violet",
-        year: fallback?.year || "2026",
-        discipline: fallback?.discipline || "FULL-STACK DEVELOPMENT",
-        desc: dbProject.shortDescription || dbProject.longDescription,
-        role: fallback?.role || "Full-stack developer",
-        stackText: dbStack.join(", "),
-        metric: dbProject.resultText || fallback?.metric || "Verified Project",
-        browserUrl: dbProject.githubUrl
-          ? dbProject.githubUrl.replace(/^https?:\/\//, "")
-          : fallback?.browserUrl || `${dbProject.slug}.app`,
-        challenge: dbProject.caseStudy?.challenge || fallback?.challenge || "",
-        solution: dbProject.caseStudy?.solution || fallback?.solution || "",
-        outcome: dbProject.caseStudy?.outcome || fallback?.outcome || "",
-        nextSlug: fallback?.nextSlug || "fixflow",
-        nextTitle: fallback?.nextTitle || "FixFlow",
-      }
-    : fallback!;
+  const dbStack = Array.isArray(dbProject.stack) ? dbProject.stack : [];
+  const allProjects = await getProjects();
+  const currentIndex = allProjects.findIndex((p) => p.slug === slug);
+  const nextProject =
+    allProjects.length > 1 && currentIndex !== -1
+      ? allProjects[(currentIndex + 1) % allProjects.length]
+      : null;
+
+  const project: CaseStudyData = {
+    slug: dbProject.slug,
+    title: dbProject.title,
+    type: dbStack.some(
+      (s) =>
+        typeof s === "string" &&
+        (s.toLowerCase().includes("express") ||
+          s.toLowerCase().includes("node") ||
+          s.toLowerCase().includes("mongo"))
+    )
+      ? "Full-Stack"
+      : "Frontend",
+    palette: CASE_STUDIES[slug]?.palette || (dbProject.featured ? "violet" : "orange"),
+    year: CASE_STUDIES[slug]?.year || "2026",
+    discipline:
+      CASE_STUDIES[slug]?.discipline ||
+      (dbProject.featured ? "FULL-STACK DEVELOPMENT" : "FRONTEND / OPEN-SOURCE"),
+    desc: dbProject.shortDescription || dbProject.longDescription || "",
+    role: CASE_STUDIES[slug]?.role || "Full-stack developer",
+    stackText: dbStack.join(", "),
+    metric: dbProject.resultText || CASE_STUDIES[slug]?.metric || "Verified Project",
+    browserUrl: dbProject.githubUrl
+      ? dbProject.githubUrl.replace(/^https?:\/\//, "")
+      : dbProject.liveUrl
+      ? dbProject.liveUrl.replace(/^https?:\/\//, "")
+      : `${dbProject.slug}.app`,
+    challenge: dbProject.caseStudy?.challenge || CASE_STUDIES[slug]?.challenge || "",
+    solution: dbProject.caseStudy?.solution || CASE_STUDIES[slug]?.solution || "",
+    outcome: dbProject.caseStudy?.outcome || CASE_STUDIES[slug]?.outcome || "",
+    nextSlug: nextProject ? nextProject.slug : "projects",
+    nextTitle: nextProject ? nextProject.title : "All Projects",
+  };
 
   const softwareJsonLd = {
     "@context": "https://schema.org",

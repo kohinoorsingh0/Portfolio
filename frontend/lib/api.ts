@@ -238,22 +238,32 @@ export async function getProjects(): Promise<ProjectData[]> {
 }
 
 export async function getProjectBySlug(slug: string): Promise<ProjectData | null> {
+  const cleanSlug = slug.toLowerCase().trim();
   try {
-    const url = `${API_BASE_URL}/projects/${slug}`;
+    const url = `${API_BASE_URL}/projects/${cleanSlug}`;
     const res = await fetch(url, {
       method: "GET",
-      next: { revalidate: 60 },
+      cache: "no-store",
       headers: { Accept: "application/json" },
     });
 
     if (res.ok) {
       return await res.json();
     }
+    if (res.status === 404) {
+      return null;
+    }
   } catch {
-    // Fall back to local search
+    // If backend is unreachable, check getProjects() so single source of truth is respected
+    try {
+      const projects = await getProjects();
+      const match = projects.find((p) => p.slug.toLowerCase().trim() === cleanSlug);
+      return match || null;
+    } catch {
+      return null;
+    }
   }
-  const fallback = FALLBACK_PROJECTS.find((p) => p.slug === slug);
-  return fallback || null;
+  return null;
 }
 
 export async function getJourney(): Promise<JourneyData[]> {
