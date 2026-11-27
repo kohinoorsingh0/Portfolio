@@ -81,7 +81,7 @@ export default async function ProjectDetailPage({
     challenge: dbProject.caseStudy?.challenge || CASE_STUDIES[slug]?.challenge || "",
     solution: dbProject.caseStudy?.solution || CASE_STUDIES[slug]?.solution || "",
     outcome: dbProject.caseStudy?.outcome || CASE_STUDIES[slug]?.outcome || "",
-    nextSlug: nextProject ? nextProject.slug : "projects",
+    nextSlug: nextProject ? nextProject.slug : "/projects",
     nextTitle: nextProject ? nextProject.title : "All Projects",
   };
 

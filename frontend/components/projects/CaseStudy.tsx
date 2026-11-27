@@ -357,12 +357,20 @@ export default function CaseStudy({ project }: { project: CaseStudyData }) {
 
       {/* NEXT CASE STUDY matching Figma: .next-case */}
       <Link
-        href={`/projects/${project.nextSlug}`}
+        href={
+          !project.nextSlug ||
+          project.nextSlug === "projects" ||
+          project.nextSlug === "/projects"
+            ? "/projects"
+            : project.nextSlug.startsWith("/")
+            ? project.nextSlug
+            : `/projects/${project.nextSlug}`
+        }
         className="group w-full bg-[#FFF3E8] dark:bg-[#1E1715] text-[#14121F] dark:text-cream py-16 sm:py-24 px-4 sm:px-8 lg:px-16 flex flex-col sm:flex-row sm:items-center justify-between gap-6 transition-colors duration-300 border-t border-black/5 dark:border-white/5 cursor-pointer"
       >
         <div className="max-w-4xl">
           <span className="font-mono text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em] text-coral block mb-3">
-            NEXT CASE STUDY
+            {project.nextTitle === "All Projects" ? "ALL PROJECTS" : "NEXT CASE STUDY"}
           </span>
           <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-black tracking-[-0.05em] leading-[0.95] text-ink dark:text-cream group-hover:text-royal dark:group-hover:text-lime transition-colors">
             {project.nextTitle}
